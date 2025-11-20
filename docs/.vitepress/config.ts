@@ -6,8 +6,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 
 // 动态设置 base 路径
 // 在 GitHub Pages 上，如果不是 username.github.io 仓库，需要使用仓库名作为 base
-// 可以通过环境变量 BASE_PATH 设置，默认为 '/'
-const base = process.env.BASE_PATH || '/'
+// 可以通过环境变量 BASE_PATH 设置，默认为 '/my-vue-hooks/'
+const base = process.env.BASE_PATH || '/my-vue-hooks/'
 
 export default defineConfig({
   title: 'My Hooks',
@@ -26,7 +26,7 @@ export default defineConfig({
     nav: [
       { text: '指南', link: '/guide/' },
       { text: 'Hooks', link: '/hooks/' },
-      { text: 'GitHub', link: 'https://github.com/zhangqinglei-tal/my-hooks' }
+      { text: 'GitHub', link: 'https://github.com/zhangqinglei-tal/my-vue-hooks' }
     ],
     
     sidebar: {
@@ -67,7 +67,7 @@ export default defineConfig({
     },
     
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/zhangqinglei-tal/my-hooks' }
+      { icon: 'github', link: 'https://github.com/zhangqinglei-tal/my-vue-hooks' }
     ],
     
     footer: {
