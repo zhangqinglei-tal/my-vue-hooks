@@ -1,0 +1,14 @@
+src
+docs
+node_modules
+*.test.ts
+*.test.tsx
+.vscode
+.idea
+.gitignore
+.npmignore
+tsconfig.json
+vite.config.ts
+pnpm-lock.yaml
+README.md
+

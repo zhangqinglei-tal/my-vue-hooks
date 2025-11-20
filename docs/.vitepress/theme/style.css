@@ -1,0 +1,45 @@
+/* 自定义样式 */
+.demo-container {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  background: var(--vp-c-bg-soft);
+}
+
+.demo-preview {
+  margin-bottom: 1rem;
+}
+
+.demo-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.demo-button {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 4px;
+  background: var(--vp-c-bg);
+  color: var(--vp-c-text);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.demo-button:hover {
+  background: var(--vp-c-bg-alt);
+  border-color: var(--vp-c-brand);
+}
+
+.demo-button:active {
+  transform: scale(0.98);
+}
+
+.demo-value {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--vp-c-brand);
+  margin: 0.5rem 0;
+}
+

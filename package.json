@@ -1,0 +1,91 @@
+{
+  "name": "my-hooks",
+  "version": "1.0.0",
+  "description": "Collection of essential Vue Composition API utilities",
+  "type": "module",
+  "main": "./dist/my-hooks.cjs.js",
+  "module": "./dist/my-hooks.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/my-hooks.es.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/my-hooks.cjs.js"
+      }
+    },
+    "./*": {
+      "import": {
+        "types": "./dist/*.d.ts",
+        "default": "./dist/*.js"
+      },
+      "require": {
+        "types": "./dist/*.d.ts",
+        "default": "./dist/*.js"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "build:docs": "vitepress build docs",
+    "dev:docs": "vitepress dev docs",
+    "preview:docs": "vitepress preview docs",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext .ts,.vue",
+    "format": "prettier --write \"src/**/*.{ts,vue}\"",
+    "version": "node scripts/version.js",
+    "version:patch": "node scripts/version.js patch",
+    "version:minor": "node scripts/version.js minor",
+    "version:major": "node scripts/version.js major",
+    "release": "node scripts/release.js",
+    "release:patch": "node scripts/release.js patch",
+    "release:minor": "node scripts/release.js minor",
+    "release:major": "node scripts/release.js major",
+    "prepublishOnly": "node scripts/prepublish.js",
+    "prepack": "pnpm build"
+  },
+  "keywords": [
+    "vue",
+    "vue3",
+    "composition-api",
+    "hooks",
+    "utilities",
+    "vueuse"
+  ],
+  "author": "",
+  "license": "MIT",
+  "peerDependencies": {
+    "axios": "^1.0.0",
+    "vue": "^3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "axios": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@vue/test-utils": "^2.4.6",
+    "axios": "^1.13.2",
+    "eslint": "^9.39.1",
+    "jsdom": "^27.2.0",
+    "prettier": "^3.6.2",
+    "terser": "^5.36.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.2",
+    "vitepress": "^1.6.3",
+    "vitest": "^4.0.10",
+    "vue": "^3.5.24"
+  }
+}
