@@ -2,46 +2,6 @@
 
 所有可用的 Composition API hooks 列表。
 
-## 状态管理
-
-### [useCounter](/hooks/useCounter)
-
-响应式计数器 hook，提供增加、减少、设置和重置功能。
-
-```vue
-<script setup lang="ts">
-import { useCounter } from 'my-hooks'
-
-const { count, inc, dec, reset } = useCounter(0)
-</script>
-```
-
-### [useToggle](/hooks/useToggle)
-
-切换布尔值或两个值之间的切换 hook。
-
-```vue
-<script setup lang="ts">
-import { useToggle } from 'my-hooks'
-
-const { value, toggle } = useToggle(false)
-</script>
-```
-
-## 存储
-
-### [useLocalStorage](/hooks/useLocalStorage)
-
-响应式 localStorage hook，自动同步到 localStorage。
-
-```vue
-<script setup lang="ts">
-import { useLocalStorage } from 'my-hooks'
-
-const name = useLocalStorage('name', 'Vue')
-</script>
-```
-
 ## 数据请求
 
 ### [useFetch](/hooks/useFetch)
@@ -107,9 +67,6 @@ const { data, loading, pagination, total } = useTableStatic({
 
 ## 完整列表
 
-- [useCounter](/hooks/useCounter) - 响应式计数器
-- [useToggle](/hooks/useToggle) - 切换布尔值
-- [useLocalStorage](/hooks/useLocalStorage) - 响应式 localStorage
 - [useFetch](/hooks/useFetch) - 基于原生 Fetch API 的数据请求
 - [useAxiosFetch](/hooks/useAxiosFetch) - 基于 Axios 的数据请求
 - [useTableRequest](/hooks/useTableRequest) - API 请求表格管理
@@ -121,11 +78,9 @@ const { data, loading, pagination, total } = useTableStatic({
 
 ```ts
 // 从主入口导入
-import { useCounter, useToggle, useFetchGet, useAxiosGet, useTableRequest, useTableStatic } from 'my-hooks'
+import { useFetchGet, useAxiosGet, useTableRequest, useTableStatic } from 'my-hooks'
 
 // 从具体路径导入（更好的 tree shaking）
-import { useCounter } from 'my-hooks/hooks/useCounter'
-import { useToggle } from 'my-hooks/hooks/useToggle'
 import { useFetchGet } from 'my-hooks/hooks/useFetch'
 import { useAxiosGet } from 'my-hooks/hooks/useFetch'
 import { useTableRequest } from 'my-hooks/hooks/useTable'

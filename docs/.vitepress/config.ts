@@ -44,21 +44,18 @@ export default defineConfig({
           text: 'Hooks',
           items: [
             { text: '概览', link: '/hooks/' },
-            { text: 'useCounter', link: '/hooks/useCounter' },
-            { text: 'useToggle', link: '/hooks/useToggle' },
-            { text: 'useLocalStorage', link: '/hooks/useLocalStorage' },
-            {
-              text: '表格管理',
-              items: [
-                { text: 'useTableRequest', link: '/hooks/useTableRequest' },
-                { text: 'useTableStatic', link: '/hooks/useTableStatic' }
-              ]
-            },
             {
               text: '数据请求',
               items: [
                 { text: 'useFetch', link: '/hooks/useFetch' },
                 { text: 'useAxiosFetch', link: '/hooks/useAxiosFetch' }
+              ]
+            },
+            {
+              text: '表格管理',
+              items: [
+                { text: 'useTableRequest', link: '/hooks/useTableRequest' },
+                { text: 'useTableStatic', link: '/hooks/useTableStatic' }
               ]
             }
           ]

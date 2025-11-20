@@ -21,17 +21,16 @@ yarn add my-hooks
 
 ```vue
 <script setup lang="ts">
-import { useCounter } from 'my-hooks'
+import { useFetchGet } from 'my-hooks'
 
-const { count, inc, dec, reset } = useCounter(0)
+const { data, loading, error } = useFetchGet('/api/user/info')
 </script>
 
 <template>
   <div>
-    <p>Count: {{ count }}</p>
-    <button @click="inc()">增加</button>
-    <button @click="dec()">减少</button>
-    <button @click="reset()">重置</button>
+    <div v-if="loading">加载中...</div>
+    <div v-else-if="error">错误: {{ error.message }}</div>
+    <div v-else>{{ data }}</div>
   </div>
 </template>
 ```
@@ -42,10 +41,10 @@ const { count, inc, dec, reset } = useCounter(0)
 
 ```ts
 // 推荐：更好的 tree shaking
-import { useCounter } from 'my-hooks/hooks/useCounter'
+import { useFetchGet } from 'my-hooks/hooks/useFetch'
 
 // 也可以从主入口导入
-import { useCounter } from 'my-hooks'
+import { useFetchGet } from 'my-hooks'
 ```
 
 ## 在项目中使用
