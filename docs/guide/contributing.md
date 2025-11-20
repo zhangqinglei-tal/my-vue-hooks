@@ -76,7 +76,7 @@ Hook 的描述
 
 \`\`\`vue
 <script setup lang="ts">
-import { useMyHook } from 'my-hooks'
+import { useMyHook } from 'my-vue-hooks'
 
 const { state } = useMyHook('test')
 </script>

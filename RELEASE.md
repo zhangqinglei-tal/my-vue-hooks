@@ -136,12 +136,12 @@ npm publish --tag next
 
 2. **撤销 npm 发布**（如果 72 小时内）
    ```bash
-   npm unpublish my-hooks@1.0.1
+   npm unpublish my-vue-hooks@1.0.1
    ```
 
 3. **发布修复版本**
    ```bash
-   npm deprecate my-hooks@1.0.1 "This version has a bug, please use 1.0.2"
+   npm deprecate my-vue-hooks@1.0.1 "This version has a bug, please use 1.0.2"
    ```
 
 ## 版本号管理最佳实践
@@ -192,13 +192,13 @@ node -p "require('./package.json').version"
 ### Q: 如何查看发布历史？
 
 ```bash
-npm view my-hooks versions
+npm view my-vue-hooks versions
 ```
 
 ### Q: 如何查看特定版本的信息？
 
 ```bash
-npm view my-hooks@1.0.0
+npm view my-vue-hooks@1.0.0
 ```
 
 ### Q: 发布失败怎么办？

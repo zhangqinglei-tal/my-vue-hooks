@@ -15,18 +15,18 @@
 ### 安装
 
 ```bash
-npm install my-hooks
+npm install my-vue-hooks
 # 或
-pnpm add my-hooks
+pnpm add my-vue-hooks
 # 或
-yarn add my-hooks
+yarn add my-vue-hooks
 ```
 
 ### 使用
 
 ```vue
 <script setup lang="ts">
-import { useFetchGet } from 'my-hooks'
+import { useFetchGet } from 'my-vue-hooks'
 
 const { data, loading, error } = useFetchGet('/api/user/info')
 </script>
@@ -46,10 +46,10 @@ const { data, loading, error } = useFetchGet('/api/user/info')
 
 ```ts
 // ✅ 只导入需要的 hook
-import { useFetchGet } from 'my-hooks'
+import { useFetchGet } from 'my-vue-hooks'
 
 // ✅ 或者从具体路径导入（更好的 tree shaking）
-import { useFetchGet } from 'my-hooks/hooks/useFetch'
+import { useFetchGet } from 'my-vue-hooks/hooks/useFetch'
 ```
 
 ## 贡献

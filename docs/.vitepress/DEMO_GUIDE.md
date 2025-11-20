@@ -24,7 +24,7 @@ VitePress 支持在 Markdown 文档中直接使用 Vue 组件，这使得我们�
 </template>
 
 <script setup lang="ts">
-import { useCounter } from 'my-hooks'
+import { useCounter } from 'my-vue-hooks'
 
 const { count, inc, reset } = useCounter(0)
 </script>
@@ -58,7 +58,7 @@ export default {
 
 \`\`\`vue
 <script setup lang="ts">
-import { useCounter } from 'my-hooks'
+import { useCounter } from 'my-vue-hooks'
 const { count, inc, reset } = useCounter(0)
 </script>
 \`\`\`
@@ -78,7 +78,7 @@ const { count, inc, reset } = useCounter(0)
 
 ## 注意事项
 
-1. **导入路径**：组件中导入 `my-hooks` 时，VitePress 会自动解析到 `src` 目录（通过 alias 配置）
+1. **导入路径**：组件中导入 `my-vue-hooks` 时，VitePress 会自动解析到 `src` 目录（通过 alias 配置）
 2. **客户端渲染**：如果组件需要浏览器 API，可以使用 `<ClientOnly>` 包裹：
    ```vue
    <ClientOnly>

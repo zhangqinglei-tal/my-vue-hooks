@@ -7,7 +7,7 @@
 1. 登录 [GitHub](https://github.com)
 2. 点击右上角的 `+` 按钮，选择 `New repository`
 3. 填写仓库信息：
-   - **Repository name**: `my-hooks` (或你喜欢的名字)
+   - **Repository name**: `my-vue-hooks` (或你喜欢的名字)
    - **Description**: `A collection of Vue 3 Composition API utilities inspired by VueUse`
    - **Visibility**: 选择 `Public` (公开) 或 `Private` (私有)
    - **不要**勾选 "Initialize this repository with a README"（我们已经有了）
@@ -40,10 +40,10 @@ git commit -m "feat: initial commit
 
 ```bash
 # 添加远程仓库
-git remote add origin https://github.com/YOUR_USERNAME/my-hooks.git
+git remote add origin https://github.com/YOUR_USERNAME/my-vue-hooks.git
 
 # 或者使用 SSH（如果你配置了 SSH key）
-# git remote add origin git@github.com:YOUR_USERNAME/my-hooks.git
+# git remote add origin git@github.com:YOUR_USERNAME/my-vue-hooks.git
 
 # 推送代码到 GitHub
 git branch -M main
@@ -52,7 +52,7 @@ git push -u origin main
 
 ## 步骤 5: 验证
 
-访问 `https://github.com/YOUR_USERNAME/my-hooks` 确认代码已成功推送。
+访问 `https://github.com/YOUR_USERNAME/my-vue-hooks` 确认代码已成功推送。
 
 ## 后续操作
 
@@ -71,9 +71,9 @@ git push -u origin main
 可以在 README.md 中添加一些徽章，例如：
 
 ```markdown
-![GitHub stars](https://img.shields.io/github/stars/YOUR_USERNAME/my-hooks)
-![GitHub license](https://img.shields.io/github/license/YOUR_USERNAME/my-hooks)
-![npm version](https://img.shields.io/npm/v/my-hooks)
+![GitHub stars](https://img.shields.io/github/stars/YOUR_USERNAME/my-vue-hooks)
+![GitHub license](https://img.shields.io/github/license/YOUR_USERNAME/my-vue-hooks)
+![npm version](https://img.shields.io/npm/v/my-vue-hooks)
 ```
 
 ## 常见问题
@@ -86,7 +86,7 @@ git push -u origin main
 
 2. **使用 SSH**:
    - 配置 SSH key: https://docs.github.com/en/authentication/connecting-to-github-with-ssh
-   - 使用 SSH URL: `git@github.com:YOUR_USERNAME/my-hooks.git`
+   - 使用 SSH URL: `git@github.com:YOUR_USERNAME/my-vue-hooks.git`
 
 ### 如果仓库已经存在
 

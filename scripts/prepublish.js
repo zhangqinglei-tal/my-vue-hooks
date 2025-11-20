@@ -33,8 +33,8 @@ if (!existsSync(distPath)) {
 
 // 2. 检查必要的文件是否存在
 const requiredFiles = [
-  'dist/my-hooks.es.js',
-  'dist/my-hooks.cjs.js',
+  'dist/my-vue-hooks.es.js',
+  'dist/my-vue-hooks.cjs.js',
   'dist/index.d.ts',
 ]
 

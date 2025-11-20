@@ -20,9 +20,9 @@
 ## 安装
 
 ```bash
-npm install my-hooks axios
+npm install my-vue-hooks axios
 # 或
-pnpm add my-hooks axios
+pnpm add my-vue-hooks axios
 ```
 
 **注意：** 使用 `useAxiosFetch` 需要额外安装 `axios`。
@@ -35,7 +35,7 @@ pnpm add my-hooks axios
 
 ```vue
 <script setup lang="ts">
-import { useAxiosGet } from 'my-hooks'
+import { useAxiosGet } from 'my-vue-hooks'
 
 const { data, loading, error, execute } = useAxiosGet<UserInfo>('/api/user/info')
 </script>
@@ -45,7 +45,7 @@ const { data, loading, error, execute } = useAxiosGet<UserInfo>('/api/user/info'
 
 ```vue
 <script setup lang="ts">
-import { useAxiosPost } from 'my-hooks'
+import { useAxiosPost } from 'my-vue-hooks'
 
 const { data, loading, error } = useAxiosPost<CreateResult>(
   '/api/user/create',
@@ -58,7 +58,7 @@ const { data, loading, error } = useAxiosPost<CreateResult>(
 
 ```vue
 <script setup lang="ts">
-import { useAxiosFetch } from 'my-hooks'
+import { useAxiosFetch } from 'my-vue-hooks'
 
 const { data, loading, error, execute } = useAxiosFetch<UserInfo>(
   '/api/user/info',
@@ -171,7 +171,7 @@ const { data, loading } = useAxiosFetch('/api/data', {
 
 ```ts
 import { ref } from 'vue'
-import { useAxiosFetch } from 'my-hooks'
+import { useAxiosFetch } from 'my-vue-hooks'
 
 const userId = ref(1)
 const { data, loading } = useAxiosFetch(
@@ -188,7 +188,7 @@ userId.value = 2
 ### FormData 请求
 
 ```ts
-import { useAxiosPost } from 'my-hooks'
+import { useAxiosPost } from 'my-vue-hooks'
 
 // 方式1：直接传入 FormData
 const formData = new FormData()
@@ -213,7 +213,7 @@ const { data, loading } = useAxiosPost('/api/upload', {
 如果不需要响应式，可以使用 Promise 版本：
 
 ```ts
-import { useGetPromise, usePostPromise } from 'my-hooks'
+import { useGetPromise, usePostPromise } from 'my-vue-hooks'
 
 // GET 请求
 const data = await useGetPromise<UserInfo>('/api/user/info')
@@ -285,7 +285,7 @@ usePostPromise<T>(url, data?, options?)
 可以通过 `setDefaultAxiosFetchOptions` 设置全局默认配置：
 
 ```ts
-import { setDefaultAxiosFetchOptions } from 'my-hooks'
+import { setDefaultAxiosFetchOptions } from 'my-vue-hooks'
 
 setDefaultAxiosFetchOptions({
   timeout: 10000,
@@ -311,7 +311,7 @@ import {
   isServerError,
   shouldRetry,
   mergeUrlParams
-} from 'my-hooks'
+} from 'my-vue-hooks'
 
 // 判断错误类型
 if (isTimeoutError(error)) {

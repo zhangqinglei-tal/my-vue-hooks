@@ -6,13 +6,13 @@
 
 ```bash
 # npm
-npm install my-hooks
+npm install my-vue-hooks
 
 # pnpm
-pnpm add my-hooks
+pnpm add my-vue-hooks
 
 # yarn
-yarn add my-hooks
+yarn add my-vue-hooks
 ```
 
 ## 基本使用
@@ -21,7 +21,7 @@ yarn add my-hooks
 
 ```vue
 <script setup lang="ts">
-import { useFetchGet } from 'my-hooks'
+import { useFetchGet } from 'my-vue-hooks'
 
 const { data, loading, error } = useFetchGet('/api/user/info')
 </script>
@@ -41,10 +41,10 @@ const { data, loading, error } = useFetchGet('/api/user/info')
 
 ```ts
 // 推荐：更好的 tree shaking
-import { useFetchGet } from 'my-hooks/hooks/useFetch'
+import { useFetchGet } from 'my-vue-hooks/hooks/useFetch'
 
 // 也可以从主入口导入
-import { useFetchGet } from 'my-hooks'
+import { useFetchGet } from 'my-vue-hooks'
 ```
 
 ## 在项目中使用
@@ -59,7 +59,7 @@ My Hooks 已经过优化，可以直接在 Vite 项目中使用，无需额外�
 
 ```js
 module.exports = {
-  transpileDependencies: ['my-hooks']
+  transpileDependencies: ['my-vue-hooks']
 }
 ```
 

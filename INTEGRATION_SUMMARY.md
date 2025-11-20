@@ -32,7 +32,7 @@
 ### useTable
 
 ```ts
-import { useTableRequest, useTableStatic } from 'my-hooks'
+import { useTableRequest, useTableStatic } from 'my-vue-hooks'
 
 // 使用 API 请求的表格
 const table = useTableRequest({
@@ -51,7 +51,7 @@ const table = useTableStatic({
 ### useFetch
 
 ```ts
-import { useFetch, useAxiosFetch } from 'my-hooks'
+import { useFetch, useAxiosFetch } from 'my-vue-hooks'
 
 // 使用原生 Fetch API（不需要 axios）
 const { data, loading, error, execute } = useFetch('/api/data')

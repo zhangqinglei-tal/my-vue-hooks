@@ -6,7 +6,7 @@
 
 \`\`\`vue
 <script setup lang="ts">
-import { use{{HookName}} } from 'my-hooks'
+import { use{{HookName}} } from 'my-vue-hooks'
 
 const { value } = use{{HookName}}('param')
 </script>
@@ -60,7 +60,7 @@ interface Use{{HookName}}Return {
 
 \`\`\`vue
 <script setup lang="ts">
-import { use{{HookName}} } from 'my-hooks'
+import { use{{HookName}} } from 'my-vue-hooks'
 
 // 示例代码
 </script>

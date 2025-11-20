@@ -17,7 +17,7 @@ export default defineConfig({
   vite: {
     resolve: {
       alias: {
-        'my-hooks': resolve(__dirname, '../../src'),
+        'my-vue-hooks': resolve(__dirname, '../../src'),
       },
     },
   },

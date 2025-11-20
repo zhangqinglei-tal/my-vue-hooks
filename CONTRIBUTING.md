@@ -92,7 +92,7 @@ describe('useMouse', () => {
 
 \`\`\`vue
 <script setup lang="ts">
-import { useMouse } from 'my-hooks'
+import { useMouse } from 'my-vue-hooks'
 
 const { x, y } = useMouse()
 </script>

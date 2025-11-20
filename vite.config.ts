@@ -15,7 +15,7 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'MyHooks',
-      fileName: (format) => `my-hooks.${format}.js`,
+      fileName: (format) => `my-vue-hooks.${format}.js`,
       formats: ['es', 'cjs'],
     },
     rollupOptions: {

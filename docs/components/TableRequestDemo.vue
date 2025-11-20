@@ -76,7 +76,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useTableRequest } from 'my-hooks'
+import { useTableRequest } from 'my-vue-hooks'
 
 interface User {
   id: number

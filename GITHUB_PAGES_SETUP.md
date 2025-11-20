@@ -1,6 +1,6 @@
 # GitHub Pages 部署指南
 
-本指南将帮助你将 VitePress 文档部署到 GitHub Pages，生成类似 `https://your-username.github.io/my-hooks/hooks/` 的可访问地址。
+本指南将帮助你将 VitePress 文档部署到 GitHub Pages，生成类似 `https://your-username.github.io/my-vue-hooks/hooks/` 的可访问地址。
 
 ## 前置条件
 
@@ -25,9 +25,9 @@
 
 根据你的仓库类型，需要设置不同的 base 路径：
 
-**如果是普通仓库**（如 `username/my-hooks`）：
-- base 路径应该是 `/my-hooks/`
-- 访问地址：`https://username.github.io/my-hooks/`
+**如果是普通仓库**（如 `username/my-vue-hooks`）：
+- base 路径应该是 `/my-vue-hooks/`
+- 访问地址：`https://username.github.io/my-vue-hooks/`
 
 **如果是用户/组织主页仓库**（如 `username/username.github.io`）：
 - base 路径应该是 `/`
@@ -35,7 +35,7 @@
 
 #### 步骤 3: 更新 VitePress 配置
 
-如果仓库名不是 `my-hooks`，需要更新 `.github/workflows/docs.yml` 中的 base 路径：
+如果仓库名不是 `my-vue-hooks`，需要更新 `.github/workflows/docs.yml` 中的 base 路径：
 
 ```yaml
 env:
@@ -76,7 +76,7 @@ git commit -m "deploy docs"
 
 # 添加 GitHub Pages 分支
 git branch -M gh-pages
-git remote add origin https://github.com/YOUR_USERNAME/my-hooks.git
+git remote add origin https://github.com/YOUR_USERNAME/my-vue-hooks.git
 
 # 推送到 gh-pages 分支
 git push -f origin gh-pages
@@ -130,10 +130,10 @@ git push -f origin gh-pages
 
 ```ts
 nav: [
-  { text: 'GitHub', link: 'https://github.com/YOUR_USERNAME/my-hooks' }
+  { text: 'GitHub', link: 'https://github.com/YOUR_USERNAME/my-vue-hooks' }
 ],
 socialLinks: [
-  { icon: 'github', link: 'https://github.com/YOUR_USERNAME/my-hooks' }
+  { icon: 'github', link: 'https://github.com/YOUR_USERNAME/my-vue-hooks' }
 ]
 ```
 

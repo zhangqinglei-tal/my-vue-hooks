@@ -12,9 +12,9 @@
 ## 安装
 
 ```bash
-npm install my-hooks
+npm install my-vue-hooks
 # 或
-pnpm add my-hooks
+pnpm add my-vue-hooks
 ```
 
 ## 基础用法
@@ -45,7 +45,7 @@ pnpm add my-hooks
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useTableStatic } from 'my-hooks'
+import { useTableStatic } from 'my-vue-hooks'
 
 interface User {
   id: number
@@ -160,7 +160,7 @@ interface UseTableReturn<T> {
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useTableStatic } from 'my-hooks'
+import { useTableStatic } from 'my-vue-hooks'
 
 const allUsers = ref<User[]>([...])
 

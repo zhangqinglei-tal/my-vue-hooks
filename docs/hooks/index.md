@@ -10,7 +10,7 @@
 
 ```vue
 <script setup lang="ts">
-import { useFetchGet } from 'my-hooks'
+import { useFetchGet } from 'my-vue-hooks'
 
 const { data, loading, error } = useFetchGet('/api/user/info')
 </script>
@@ -22,7 +22,7 @@ const { data, loading, error } = useFetchGet('/api/user/info')
 
 ```vue
 <script setup lang="ts">
-import { useAxiosGet } from 'my-hooks'
+import { useAxiosGet } from 'my-vue-hooks'
 
 const { data, loading, error } = useAxiosGet('/api/user/info')
 </script>
@@ -36,7 +36,7 @@ const { data, loading, error } = useAxiosGet('/api/user/info')
 
 ```vue
 <script setup lang="ts">
-import { useTableRequest } from 'my-hooks'
+import { useTableRequest } from 'my-vue-hooks'
 
 const { data, loading, pagination, total } = useTableRequest({
   fetcher: async (params) => {
@@ -56,7 +56,7 @@ const { data, loading, pagination, total } = useTableRequest({
 
 ```vue
 <script setup lang="ts">
-import { useTableStatic } from 'my-hooks'
+import { useTableStatic } from 'my-vue-hooks'
 
 const { data, loading, pagination, total } = useTableStatic({
   data: allUsers,
@@ -78,12 +78,12 @@ const { data, loading, pagination, total } = useTableStatic({
 
 ```ts
 // 从主入口导入
-import { useFetchGet, useAxiosGet, useTableRequest, useTableStatic } from 'my-hooks'
+import { useFetchGet, useAxiosGet, useTableRequest, useTableStatic } from 'my-vue-hooks'
 
 // 从具体路径导入（更好的 tree shaking）
-import { useFetchGet } from 'my-hooks/hooks/useFetch'
-import { useAxiosGet } from 'my-hooks/hooks/useFetch'
-import { useTableRequest } from 'my-hooks/hooks/useTable'
-import { useTableStatic } from 'my-hooks/hooks/useTable'
+import { useFetchGet } from 'my-vue-hooks/hooks/useFetch'
+import { useAxiosGet } from 'my-vue-hooks/hooks/useFetch'
+import { useTableRequest } from 'my-vue-hooks/hooks/useTable'
+import { useTableStatic } from 'my-vue-hooks/hooks/useTable'
 ```
 

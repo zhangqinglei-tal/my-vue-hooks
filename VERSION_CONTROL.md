@@ -6,8 +6,8 @@
 
 ### 构建输出
 
-- **ES 模块**: `dist/my-hooks.es.js` - 支持现代打包工具
-- **CommonJS**: `dist/my-hooks.cjs.js` - 支持 Node.js 环境
+- **ES 模块**: `dist/my-vue-hooks.es.js` - 支持现代打包工具
+- **CommonJS**: `dist/my-vue-hooks.cjs.js` - 支持 Node.js 环境
 - **类型定义**: `dist/**/*.d.ts` - TypeScript 类型支持
 - **Source Map**: 包含完整的源码映射，便于调试
 
@@ -22,7 +22,7 @@
 构建时自动注入版本号到代码中：
 
 ```ts
-import { VERSION, getVersion } from 'my-hooks'
+import { VERSION, getVersion } from 'my-vue-hooks'
 
 console.log(VERSION)        // "1.0.0"
 console.log(getVersion())    // "1.0.0"
@@ -181,7 +181,7 @@ pnpm release:major
 ### 在代码中获取版本
 
 ```ts
-import { VERSION, getVersion } from 'my-hooks'
+import { VERSION, getVersion } from 'my-vue-hooks'
 
 // 直接使用常量
 console.log(VERSION)
@@ -195,7 +195,7 @@ console.log(getVersion())
 构建后的文件会包含版本信息 banner：
 
 ```js
-/*! my-hooks v1.0.0 | MIT License */
+/*! my-vue-hooks v1.0.0 | MIT License */
 ```
 
 ## 🎯 最佳实践
@@ -224,13 +224,13 @@ npm pack
 
 ```bash
 # 查看所有版本
-npm view my-hooks versions
+npm view my-vue-hooks versions
 
 # 查看最新版本信息
-npm view my-hooks
+npm view my-vue-hooks
 
 # 查看特定版本
-npm view my-hooks@1.0.0
+npm view my-vue-hooks@1.0.0
 ```
 
 ## 📚 相关文档

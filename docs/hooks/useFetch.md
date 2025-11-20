@@ -20,9 +20,9 @@
 ## 安装
 
 ```bash
-npm install my-hooks
+npm install my-vue-hooks
 # 或
-pnpm add my-hooks
+pnpm add my-vue-hooks
 ```
 
 ## 基础用法
@@ -33,7 +33,7 @@ pnpm add my-hooks
 
 ```vue
 <script setup lang="ts">
-import { useFetchGet } from 'my-hooks'
+import { useFetchGet } from 'my-vue-hooks'
 
 const { data, loading, error, execute } = useFetchGet<UserInfo>('/api/user/info')
 </script>
@@ -43,7 +43,7 @@ const { data, loading, error, execute } = useFetchGet<UserInfo>('/api/user/info'
 
 ```vue
 <script setup lang="ts">
-import { useFetchPost } from 'my-hooks'
+import { useFetchPost } from 'my-vue-hooks'
 
 const { data, loading, error } = useFetchPost<CreateResult>(
   '/api/user/create',
@@ -56,7 +56,7 @@ const { data, loading, error } = useFetchPost<CreateResult>(
 
 ```vue
 <script setup lang="ts">
-import { useFetch } from 'my-hooks'
+import { useFetch } from 'my-vue-hooks'
 
 const { data, loading, error, execute } = useFetch<UserInfo>(
   '/api/user/info',
@@ -169,7 +169,7 @@ const { data, loading } = useFetch('/api/data', {
 
 ```ts
 import { ref } from 'vue'
-import { useFetch } from 'my-hooks'
+import { useFetch } from 'my-vue-hooks'
 
 const userId = ref(1)
 const { data, loading } = useFetch(
@@ -186,7 +186,7 @@ userId.value = 2
 ### FormData 请求
 
 ```ts
-import { useFetchPost } from 'my-hooks'
+import { useFetchPost } from 'my-vue-hooks'
 
 // 方式1：直接传入 FormData
 const formData = new FormData()
@@ -211,7 +211,7 @@ const { data, loading } = useFetchPost('/api/upload', {
 如果不需要响应式，可以使用 Promise 版本：
 
 ```ts
-import { useFetchGetPromise, useFetchPostPromise } from 'my-hooks'
+import { useFetchGetPromise, useFetchPostPromise } from 'my-vue-hooks'
 
 // GET 请求
 const data = await useFetchGetPromise<UserInfo>('/api/user/info')
@@ -282,7 +282,7 @@ useFetchPostPromise<T>(url, data?, options?)
 可以通过 `setDefaultFetchOptions` 设置全局默认配置：
 
 ```ts
-import { setDefaultFetchOptions } from 'my-hooks'
+import { setDefaultFetchOptions } from 'my-vue-hooks'
 
 setDefaultFetchOptions({
   timeout: 10000,
@@ -308,7 +308,7 @@ import {
   isServerError,
   shouldRetry,
   mergeUrlParams
-} from 'my-hooks'
+} from 'my-vue-hooks'
 
 // 判断错误类型
 if (isTimeoutError(error)) {

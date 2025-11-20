@@ -1,7 +1,7 @@
 # 项目结构
 
 ```
-my-hooks/
+my-vue-hooks/
 ├── src/                    # 源代码目录
 │   ├── hooks/             # Hooks 实现
 │   │   ├── __tests__/     # 测试文件
@@ -119,8 +119,8 @@ pnpm build:docs
 
 ```
 dist/
-├── my-hooks.es.js         # ES 模块格式
-├── my-hooks.cjs.js        # CommonJS 格式
+├── my-vue-hooks.es.js         # ES 模块格式
+├── my-vue-hooks.cjs.js        # CommonJS 格式
 ├── index.d.ts             # TypeScript 类型定义
 ├── hooks/
 │   ├── useCounter.js
@@ -134,13 +134,13 @@ dist/
 ### 从主入口导入
 
 ```ts
-import { useCounter } from 'my-hooks'
+import { useCounter } from 'my-vue-hooks'
 ```
 
 ### 从具体路径导入（更好的 tree shaking）
 
 ```ts
-import { useCounter } from 'my-hooks/hooks/useCounter'
+import { useCounter } from 'my-vue-hooks/hooks/useCounter'
 ```
 
 ## 发布

@@ -13,9 +13,9 @@
 ## 安装
 
 ```bash
-npm install my-hooks
+npm install my-vue-hooks
 # 或
-pnpm add my-hooks
+pnpm add my-vue-hooks
 ```
 
 ## 基础用法
@@ -43,7 +43,7 @@ pnpm add my-hooks
 </template>
 
 <script setup lang="ts">
-import { useTableRequest } from 'my-hooks'
+import { useTableRequest } from 'my-vue-hooks'
 
 interface User {
   id: number
@@ -72,7 +72,7 @@ const { data, loading, pagination, total, refresh, changePage, changePageSize } 
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useTableRequest } from 'my-hooks'
+import { useTableRequest } from 'my-vue-hooks'
 
 const searchForm = ref({
   keyword: '',
@@ -292,7 +292,7 @@ responseKeyConfig: {
 可以通过 `setUseTableRequestDefaults` 设置全局默认配置：
 
 ```ts
-import { setUseTableRequestDefaults } from 'my-hooks'
+import { setUseTableRequestDefaults } from 'my-vue-hooks'
 
 setUseTableRequestDefaults({
   pagination: {

@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useFetchGet } from 'my-hooks'
+import { useFetchGet } from 'my-vue-hooks'
 
 // 模拟数据
 const mockData = {

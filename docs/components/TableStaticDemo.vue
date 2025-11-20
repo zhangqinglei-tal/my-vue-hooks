@@ -79,7 +79,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { useTableStatic } from 'my-hooks'
+import { useTableStatic } from 'my-vue-hooks'
 
 interface User {
   id: number

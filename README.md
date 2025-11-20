@@ -13,18 +13,18 @@
 ## 📦 安装
 
 ```bash
-npm install my-hooks
+npm install my-vue-hooks
 # 或
-pnpm add my-hooks
+pnpm add my-vue-hooks
 # 或
-yarn add my-hooks
+yarn add my-vue-hooks
 ```
 
 ## 🚀 快速开始
 
 ```vue
 <script setup lang="ts">
-import { useCounter } from 'my-hooks'
+import { useCounter } from 'my-vue-hooks'
 
 const { count, inc, dec, reset } = useCounter(0)
 </script>
@@ -100,7 +100,7 @@ pnpm release:major
 SDK 内置了版本信息，可以在代码中使用：
 
 ```ts
-import { VERSION, getVersion } from 'my-hooks'
+import { VERSION, getVersion } from 'my-vue-hooks'
 
 console.log(VERSION)        // "1.0.0"
 console.log(getVersion())    // "1.0.0"
