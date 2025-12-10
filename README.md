@@ -1,112 +1,121 @@
-# My Hooks
+# xn-fe-tools
 
-一个 Vue 3 Composition API 工具库集合，灵感来自 VueUse。
+基于 Vue 3 Composition API 的工具库，当前主力能力是 `toAwaitFetch`：一个支持链式和解构两种模式的 HTTP 请求工具，内置错误处理、重试、全局配置与取消能力。
 
 ## ✨ 特性
 
-- 🎯 **Tree Shakeable** - 支持按需导入，减少打包体积
-- 📦 **TypeScript** - 完整的 TypeScript 支持
-- 🚀 **轻量级** - 零依赖（除了 Vue）
-- 🔧 **易用** - 简单直观的 API
-- 📚 **文档完善** - 详细的文档和示例
+- 双模式：链式调用与解构 `[data, error, success]`
+- 完整错误处理：HTTP / 业务 / 网络 / 超时，支持钩子与抑制抛错
+- 重试与超时：内置重试策略、可自定义 shouldRetry，支持超时与取消
+- 多种请求/响应类型：JSON、FormData、Blob
+- 全局配置：baseURL、headers、validateStatus、validateResponse、transformResponse 等
+- TypeScript 全量类型定义，零外部依赖（基于原生 Fetch）
 
 ## 📦 安装
 
 ```bash
-npm install my-vue-hooks
-# 或
-pnpm add my-vue-hooks
-# 或
-yarn add my-vue-hooks
+# npm
+npm install xn-fe-tools
+# pnpm
+pnpm add xn-fe-tools
+# yarn
+yarn add xn-fe-tools
 ```
 
-## 🚀 快速开始
+## 🚀 快速使用
 
-```vue
-<script setup lang="ts">
-import { useCounter } from 'my-vue-hooks'
+### 解构模式
 
-const { count, inc, dec, reset } = useCounter(0)
-</script>
+```ts
+import { sendGet, sendPost } from 'xn-fe-tools'
 
-<template>
-  <div>
-    <p>Count: {{ count }}</p>
-    <button @click="inc()">+</button>
-    <button @click="dec()">-</button>
-    <button @click="reset()">Reset</button>
-  </div>
-</template>
+const [list, listError, ok] = await sendGet('/api/users')
+const [created] = await sendPost('/api/users', { name: 'John' })
 ```
 
-## 📖 文档
+### 链式模式
 
-查看 [完整文档](https://your-docs-site.com) 了解更多。
+```ts
+import toAwaitFetch from 'xn-fe-tools'
 
-## 🛠️ 开发
+toAwaitFetch
+  .sendGet('/api/users')
+  .catchHttp((err) => console.error('HTTP 错误', err))
+  .catchBusiness((err) => console.error('业务错误', err))
+  .catchNetwork((err) => console.error('网络/超时错误', err))
+```
+
+### 创建实例并统一配置（推荐）
+
+```ts
+import { createInstance } from 'xn-fe-tools'
+
+const http = createInstance({
+  baseURL: '',
+  timeout: 5000,
+  headers: ({ url, method }) => ({
+    Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
+    'X-Request-Path': url,
+    'X-Request-Method': method || 'GET',
+  }),
+  validateResponse: (res) => res.code === 200,
+  transformResponse: (res) => res.data,
+  retry: {
+    enabled: true,
+    maxRetryCount: 3,
+    delay: 1000,
+    shouldRetry: async (attempt, fetchError) => {
+      if (fetchError.type === 'business' && fetchError.response?.code === 401) {
+        return false
+      }
+      return true
+    },
+  },
+  mode: 'cors',
+  credentials: 'include',
+})
+
+const [data] = await http.sendGet('/api/users', undefined, { timeout: 2000 })
+```
+
+### 取消请求
+
+```ts
+import { sendGet } from 'xn-fe-tools'
+
+const request = sendGet('/api/users', undefined, { timeout: 8000 })
+request.cancel()
+const [, error, success] = await request // 被取消时 error.type === 'timeout' 或 'network'
+```
+
+## 🧭 更多能力
+
+- 自定义状态码校验：`validateStatus`
+- 业务校验与转换：`validateResponse`、`transformResponse`
+- FormData / Blob：`sendPostForm`、`sendPostBlob`、`sendGetBlob`
+- Promise.all 并行：`Promise.all(urls.map((url) => sendGet(url)))`
+- 全局配置管理：`setGlobalConfig` / `mergeGlobalConfig`
+
+详见 `docs/hooks/toAwaitFetch.md`。
+
+## 🛠️ 开发与测试
 
 ```bash
-# 安装依赖
-pnpm install
-
-# 开发模式
-pnpm dev
-
-# 构建
-pnpm build
-
-# 运行测试
-pnpm test
-
-# 开发文档
-pnpm dev:docs
-
-# 构建文档
-pnpm build:docs
+pnpm install          # 安装依赖
+pnpm build            # 构建产物（含 d.ts）
+pnpm vitest run __tests__   # 运行所有测试
+pnpm prepublishOnly   # 发布前检查（构建、测试、类型检查）
 ```
-
-## 📝 添加新 Hook
-
-查看 [贡献指南](./docs/guide/contributing.md) 了解如何添加新的 hook。
-
-## 🚀 发布 SDK
-
-### 快速发布
-
-```bash
-# 发布补丁版本 (1.0.0 -> 1.0.1)
-pnpm release:patch
-
-# 发布次版本 (1.0.0 -> 1.1.0)
-pnpm release:minor
-
-# 发布主版本 (1.0.0 -> 2.0.0)
-pnpm release:major
-```
-
-### 手动发布
-
-1. 更新版本号: `pnpm version:patch|minor|major`
-2. 更新 CHANGELOG.md
-3. 构建: `pnpm build`
-4. 测试: `pnpm test:run`
-5. 提交: `git commit -m "chore: release v1.0.1" && git tag v1.0.1`
-6. 发布: `npm publish`
-
-详细说明请查看 [发布指南](./RELEASE.md)。
 
 ## 📦 版本信息
 
-SDK 内置了版本信息，可以在代码中使用：
-
 ```ts
-import { VERSION, getVersion } from 'my-vue-hooks'
+import { VERSION, getVersion } from 'xn-fe-tools'
 
-console.log(VERSION)        // "1.0.0"
-console.log(getVersion())    // "1.0.0"
+console.log(VERSION)
+console.log(getVersion())
 ```
 
 ## 📄 License
 
 MIT
-
