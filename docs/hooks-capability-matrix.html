@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue Hooks 能力矩阵</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+          'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f5f5f5;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: white;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        color: #2c3e50;
+        border-bottom: 3px solid #3498db;
+        padding-bottom: 10px;
+        margin-bottom: 30px;
+        font-size: 2.5em;
+      }
+
+      h2 {
+        color: #34495e;
+        margin-top: 40px;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #ecf0f1;
+        font-size: 2em;
+      }
+
+      h3 {
+        color: #555;
+        margin-top: 30px;
+        margin-bottom: 15px;
+        font-size: 1.5em;
+      }
+
+      p {
+        margin-bottom: 15px;
+        color: #666;
+      }
+
+      code {
+        background-color: #f4f4f4;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 0.9em;
+        color: #e83e8c;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background: white;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      th {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 12px 15px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 0.95em;
+      }
+
+      td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      tr:hover {
+        background-color: #f8f9fa;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      /* 分类列样式 */
+      td:first-child {
+        font-weight: 600;
+        color: #2c3e50;
+        min-width: 120px;
+      }
+
+      /* 能力点列样式 */
+      td:nth-child(2) {
+        color: #34495e;
+        font-weight: 500;
+      }
+
+      /* 核心必备行 */
+      tr:has(td:first-child:contains('核心必备')) td:first-child {
+        color: #e74c3c;
+      }
+
+      /* 常用增强行 */
+      tr:has(td:first-child:contains('常用增强')) td:first-child {
+        color: #f39c12;
+      }
+
+      /* 高级拓展行 */
+      tr:has(td:first-child:contains('高级拓展')) td:first-child {
+        color: #27ae60;
+      }
+
+      ul {
+        margin: 15px 0;
+        padding-left: 30px;
+      }
+
+      li {
+        margin-bottom: 8px;
+        color: #666;
+      }
+
+      hr {
+        border: none;
+        border-top: 2px solid #ecf0f1;
+        margin: 30px 0;
+      }
+
+      .section {
+        margin-bottom: 50px;
+      }
+
+      .legend {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        margin: 20px 0;
+        border-left: 4px solid #3498db;
+      }
+
+      .legend strong {
+        color: #2c3e50;
+      }
+
+      /* 响应式设计 */
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px;
+        }
+
+        table {
+          font-size: 0.85em;
+        }
+
+        th,
+        td {
+          padding: 8px 10px;
+        }
+
+        h1 {
+          font-size: 2em;
+        }
+
+        h2 {
+          font-size: 1.5em;
+        }
+      }
+
+      /* 打印样式 */
+      @media print {
+        body {
+          background: white;
+          padding: 0;
+        }
+
+        .container {
+          box-shadow: none;
+          padding: 20px;
+        }
+
+        table {
+          page-break-inside: avoid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Vue Hooks 能力矩阵</h1>
+
+      <!-- useTableRequest 功能矩阵 -->
+      <div class="section">
+        <h2>调用请求的表格 Hook， vueuse、ahooks 无此功能</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>分类</th>
+              <th>能力点</th>
+              <th>说明</th>
+              <th>适用场景</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>核心必备</strong></td>
+              <td>响应式状态管理（loading/data/error）</td>
+              <td>实时反映请求状态和结果</td>
+              <td>所有表格请求场景</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>灵活的请求适配（axios/fetch/自定义）</td>
+              <td>兼容多种请求方式，适配不同项目技术栈</td>
+              <td>不同技术栈项目</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>自动请求机制（immediate）</td>
+              <td>支持配置初始化自动请求，减少手动调用</td>
+              <td>页面初次加载请求</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>智能参数构建</td>
+              <td>自动组装请求参数，包括分页、过滤等</td>
+              <td>所有表格场景</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>响应式参数同步</td>
+              <td>监听参数变化，自动触发请求更新</td>
+              <td>搜索、筛选交互场景</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>加载状态管理</td>
+              <td>自动维护请求的 loading 状态</td>
+              <td>所有表格场景</td>
+            </tr>
+            <tr>
+              <td><strong>常用增强</strong></td>
+              <td>自动分页参数构建</td>
+              <td>自动构建分页相关请求参数</td>
+              <td>服务端分页场景</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>分页状态管理</td>
+              <td>统一管理分页相关状态（当前页码、每页条数、总记录数）</td>
+              <td>所有分页表格场景</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>分页参数格式适配</td>
+              <td>支持自定义分页参数字段名（page/pageNum、size/pageSize）</td>
+              <td>不同后端接口规范</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>分页功能开关</td>
+              <td>支持禁用分页功能</td>
+              <td>无分页需求场景</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>请求生命周期钩子（beforeFetch/afterFetch）</td>
+              <td>提供请求前后拦截器，支持参数预处理和响应后处理</td>
+              <td>日志、埋点、数据转换</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>灵活的数据提取</td>
+              <td>
+                支持自定义响应数据字段路径（如
+                result.data.list），支持使用后端的页码来定义当前页用于校正页码
+              </td>
+              <td>不同后端响应结构、前后端页码不一致需要校正的场景</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>错误处理机制</td>
+              <td>提供错误处理钩子，支持自定义错误处理逻辑</td>
+              <td>统一错误处理流程</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>手动触发刷新</td>
+              <td>支持手动触发请求刷新</td>
+              <td>数据更新后刷新场景</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <hr />
+
+      <!-- useTableStatic 功能矩阵 -->
+      <div class="section">
+        <h2>静态数据表格 Hook</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>分类</th>
+              <th>能力点</th>
+              <th>说明</th>
+              <th>适用场景</th>
+              <th>ahooks useTable</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>核心必备</strong></td>
+              <td>多格式数据源兼容</td>
+              <td>支持响应式引用（ref）和普通数组等多种数据格式</td>
+              <td>不同数据源格式场景</td>
+              <td>✅ 支持</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>自动响应式更新</td>
+              <td>内置数据源监听机制，数据变化时自动触发更新</td>
+              <td>数据源动态变化场景</td>
+              <td>✅ 支持</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>响应式数据返回</td>
+              <td>返回的数据集具备响应式特性，与数据源保持同步</td>
+              <td>所有静态表格场景</td>
+              <td>✅ 支持</td>
+            </tr>
+            <tr>
+              <td><strong>常用增强</strong></td>
+              <td>灵活的分页配置</td>
+              <td>支持自定义初始页码（pageIndex）和每页大小（pageSize）</td>
+              <td>自定义分页需求</td>
+              <td>✅ 支持</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>自动分页计算</td>
+              <td>内置分页算法，自动处理数据切片逻辑</td>
+              <td>所有分页场景</td>
+              <td>✅ 支持</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>可选分页模式</td>
+              <td>支持禁用分页模式，设置为 false 时返回完整数据集</td>
+              <td>无分页需求场景</td>
+              <td>✅ 支持</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>智能页码跳转</td>
+              <td>当数据源变化或页码切换导致当前页为空时，自动回退至上一页</td>
+              <td>数据删除或过滤后场景</td>
+              <td>⚠️ 需手动处理</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>客户端搜索/过滤</td>
+              <td>支持按指定列进行搜索过滤</td>
+              <td>前端搜索场景</td>
+              <td>✅ 支持</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>多种搜索模式</td>
+              <td>提供模糊匹配、正则表达式、完全匹配、自定义过滤函数</td>
+              <td>不同搜索需求场景</td>
+              <td>⚠️ 支持模糊匹配、正则匹配</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>自动过滤更新</td>
+              <td>自动监听过滤配置变化并实时更新结果</td>
+              <td>实时搜索场景</td>
+              <td>✅ 支持</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>过滤后自动重置页码</td>
+              <td>过滤条件变更时自动重置至第一页</td>
+              <td>搜索交互场景</td>
+              <td>✅ 支持</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>字段排序</td>
+              <td>支持按指定字段进行排序</td>
+              <td>所有排序场景</td>
+              <td>✅ 支持</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>自定义排序函数</td>
+              <td>支持自定义排序函数，满足复杂排序需求</td>
+              <td>复杂排序场景</td>
+              <td>✅ 支持（sorter）</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>数据处理钩子</td>
+              <td>过滤后的数据支持自定义处理逻辑</td>
+              <td>数据扩展场景</td>
+              <td>⚠️ 需手动处理</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>操作方法</td>
+              <td>提供更新当前页、切换页码、修改排序规则等便捷方法</td>
+              <td>程序化控制场景</td>
+              <td>✅ 支持</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>对比说明</h3>
+        <div class="legend">
+          <ul>
+            <li><strong>✅ 支持</strong>：功能完整支持</li>
+            <li><strong>❌ 不支持</strong>：功能不支持</li>
+            <li><strong>⚠️ 部分支持或需配合其他功能</strong>：需要额外配置或配合其他 Hook 使用</li>
+          </ul>
+        </div>
+      </div>
+
+      <hr />
+      <!-- useFetch 需求文档 -->
+      <div class="section">
+        <h2>请求 Hook</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>分类</th>
+              <th>能力点</th>
+              <th>说明</th>
+              <th>适用场景</th>
+              <th>VueUse useFetch</th>
+              <th>ahooks useRequest</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>核心必备</strong></td>
+              <td>响应式状态管理（loading/data/error/statusCode）</td>
+              <td>实时反映请求状态和结果</td>
+              <td>所有 HTTP 请求场景</td>
+              <td>✅ 支持</td>
+              <td>✅ 支持</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>请求参数配置（url/method/headers/body/params/immediate）</td>
+              <td>灵活传参可复用</td>
+              <td>大部分场景</td>
+              <td>✅ 支持</td>
+              <td>✅ 支持</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>请求触发方法（send）</td>
+              <td>显式触发请求</td>
+              <td>手动请求模式</td>
+              <td>✅ 支持（execute/refresh）</td>
+              <td>✅ 支持（run）</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>请求取消（AbortController）</td>
+              <td>防止路由切换时数据污染</td>
+              <td>长耗时请求 / 组件卸载</td>
+              <td>✅ 支持（abort）</td>
+              <td>✅ 支持（cancel）</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>错误捕获与统一处理</td>
+              <td>网络/HTTP错误捕获 + 统一 handler</td>
+              <td>通用错误上报或提示</td>
+              <td>✅ 支持（基础错误处理）</td>
+              <td>✅ 支持（完善的错误处理机制）</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>数据格式化（transform）</td>
+              <td>响应数据统一结构</td>
+              <td>多组件复用同一数据结构</td>
+              <td>✅ 支持（onFetchResponse）</td>
+              <td>✅ 支持（formatResult）</td>
+            </tr>
+            <tr>
+              <td><strong>常用增强</strong></td>
+              <td>重试机制（次数/间隔）</td>
+              <td>对临时错误自动恢复</td>
+              <td>弱网络下的稳定性提升</td>
+              <td>❌ 不支持</td>
+              <td>✅ 支持（retry/retryInterval）</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>自动/手动请求模式切换</td>
+              <td>immediate 控制</td>
+              <td>页面初次加载请求与交互触发请求</td>
+              <td>✅ 支持（immediate）</td>
+              <td>✅ 支持（manual）</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>缓存机制（内存或 storage）</td>
+              <td>避免重复请求同一数据</td>
+              <td>Tab 切换 / 刷新保留数据</td>
+              <td>❌ 不支持</td>
+              <td>✅ 支持（cacheKey/cacheTime）</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>防抖 / 节流</td>
+              <td>控制频繁请求</td>
+              <td>搜索建议 / 滚动加载</td>
+              <td>❌ 不支持</td>
+              <td>✅ 支持（debounceWait/throttleWait）</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>分页 / 无限加载支持</td>
+              <td>内置分页状态与方法</td>
+              <td>列表 / feed 流场景</td>
+              <td>❌ 不支持</td>
+              <td>⚠️ 需配合 useInfiniteScroll 等</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>生命周期钩子（onBefore/onSuccess/onError/onFinally）</td>
+              <td>外部注入行为</td>
+              <td>日志、埋点、UI控制</td>
+              <td>⚠️ 部分支持（onFetchResponse/onFetchError）</td>
+              <td>✅ 支持（onBefore/onSuccess/onError/onFinally）</td>
+            </tr>
+            <tr>
+              <td><strong>高级拓展</strong></td>
+              <td>请求队列 & 并发控制</td>
+              <td>同时请求数限制或排队执行</td>
+              <td>批量任务、后台任务调度</td>
+              <td>❌ 不支持</td>
+              <td>❌ 不支持</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>重复请求合并</td>
+              <td>相同请求自动合并为一次</td>
+              <td>高并发相同数据拉取</td>
+              <td>❌ 不支持</td>
+              <td>⚠️ 通过 cacheKey 间接支持</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>定时轮询（Polling）</td>
+              <td>定时自动刷新</td>
+              <td>实时监控 / 聊天列表</td>
+              <td>❌ 不支持</td>
+              <td>✅ 支持（pollingInterval）</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>页面隐藏时取消当前请求</td>
+              <td>基于 Page Visibility API 检测页面不可见时中断请求</td>
+              <td>减少后台无效资源消耗</td>
+              <td>❌ 不支持</td>
+              <td>❌ 不支持</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>页面重新获取焦点时重新请求</td>
+              <td>在页面可见时自动刷新数据</td>
+              <td>确保数据最新</td>
+              <td>❌ 不支持</td>
+              <td>✅ 支持（refreshOnWindowFocus）</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>网络重连后自动重新发起请求</td>
+              <td>监听 `online` 事件，在网络恢复时重新请求</td>
+              <td>弱网络或离线场景</td>
+              <td>❌ 不支持</td>
+              <td>❌ 不支持</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

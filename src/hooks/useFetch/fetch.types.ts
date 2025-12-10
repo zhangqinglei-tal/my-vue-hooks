@@ -314,6 +314,33 @@ export interface UseAxiosFetchOptions<T = any> {
    * @default false
    */
   debug?: boolean
+
+  /**
+   * 是否启用缓存
+   * @default false
+   * @description 启用后，相同的请求会使用缓存结果，避免重复请求
+   */
+  cache?: boolean
+
+  /**
+   * 缓存过期时间（毫秒）
+   * @default 5 * 60 * 1000 (5分钟)
+   * @description 仅在 cache 为 true 时生效
+   */
+  cacheTTL?: number
+
+  /**
+   * 自定义缓存键生成器
+   * @description 用于自定义如何生成缓存键，默认基于 URL + method + params + data
+   */
+  cacheKeyGenerator?: import('./cacheManager').CacheKeyGenerator
+
+  /**
+   * 是否启用请求队列（去重）
+   * @default false
+   * @description 当启用时，相同的请求只会执行一次，其他请求会等待第一个请求完成并共享结果
+   */
+  dedupe?: boolean
 }
 
 /**

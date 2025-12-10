@@ -4,6 +4,7 @@ import FetchDemo from '../../components/FetchDemo.vue'
 import AxiosFetchDemo from '../../components/AxiosFetchDemo.vue'
 import TableRequestDemo from '../../components/TableRequestDemo.vue'
 import TableStaticDemo from '../../components/TableStaticDemo.vue'
+import ToAwaitFetchDemo from '../../components/ToAwaitFetchDemo.vue'
 import './style.css'
 
 export default {
@@ -14,6 +15,7 @@ export default {
     app.component('AxiosFetchDemo', AxiosFetchDemo)
     app.component('TableRequestDemo', TableRequestDemo)
     app.component('TableStaticDemo', TableStaticDemo)
+    app.component('ToAwaitFetchDemo', ToAwaitFetchDemo)
   }
 }
 

@@ -1,89 +1,29 @@
 # Hooks
 
-所有可用的 Composition API hooks 列表。
+仅保留 toAwaitFetch 相关内容。
 
-## 数据请求
+## [toAwaitFetch](/hooks/toAwaitFetch)
 
-### [useFetch](/hooks/useFetch)
+强大的 HTTP 请求工具，支持链式调用与解构双模式，内置错误处理、重试、超时与全局/单次配置。
 
-基于原生 Fetch API 的响应式数据请求 hook，零依赖，提供完整的请求生命周期管理。
+特性速览：
+- 双模式：链式 & 解构 `[data, error, success]`
+- 完整错误处理：HTTP / 业务 / 网络（支持 suppressError）
+- 重试与超时：可配置次数、间隔与自定义重试条件
+- 多种请求/响应类型：JSON、FormData、Blob
+- 全局配置：baseURL、headers、校验/转换、重试、超时
 
-```vue
-<script setup lang="ts">
-import { useFetchGet } from 'my-vue-hooks'
+```typescript
+import createInstance from 'my-vue-hooks/hooks/toAwaitFetch/toAwaitFetch'
 
-const { data, loading, error } = useFetchGet('/api/user/info')
-</script>
-```
+const fetchInstance = createInstance()
 
-### [useAxiosFetch](/hooks/useAxiosFetch)
+// 解构使用
+const [data, error, success] = await fetchInstance.sendGet('/api/users')
 
-基于 Axios 的响应式数据请求 hook，完全兼容 Axios 配置和拦截器。
-
-```vue
-<script setup lang="ts">
-import { useAxiosGet } from 'my-vue-hooks'
-
-const { data, loading, error } = useAxiosGet('/api/user/info')
-</script>
-```
-
-## 表格管理
-
-### [useTableRequest](/hooks/useTableRequest)
-
-用于处理需要发送 HTTP 请求获取数据的表格场景，提供完整的分页和请求管理。
-
-```vue
-<script setup lang="ts">
-import { useTableRequest } from 'my-vue-hooks'
-
-const { data, loading, pagination, total } = useTableRequest({
-  fetcher: async (params) => {
-    const res = await fetch('/api/users', {
-      method: 'POST',
-      body: JSON.stringify(params)
-    })
-    return res.json()
-  }
-})
-</script>
-```
-
-### [useTableStatic](/hooks/useTableStatic)
-
-用于处理已有完整数据集，需要在前端进行分页和过滤的场景。
-
-```vue
-<script setup lang="ts">
-import { useTableStatic } from 'my-vue-hooks'
-
-const { data, loading, pagination, total } = useTableStatic({
-  data: allUsers,
-  pagination: { currentPage: 1, pageSize: 10 }
-})
-</script>
-```
-
-## 完整列表
-
-- [useFetch](/hooks/useFetch) - 基于原生 Fetch API 的数据请求
-- [useAxiosFetch](/hooks/useAxiosFetch) - 基于 Axios 的数据请求
-- [useTableRequest](/hooks/useTableRequest) - API 请求表格管理
-- [useTableStatic](/hooks/useTableStatic) - 静态数据表格管理
-
-## 按需导入
-
-所有 hooks 都支持按需导入，减少打包体积：
-
-```ts
-// 从主入口导入
-import { useFetchGet, useAxiosGet, useTableRequest, useTableStatic } from 'my-vue-hooks'
-
-// 从具体路径导入（更好的 tree shaking）
-import { useFetchGet } from 'my-vue-hooks/hooks/useFetch'
-import { useAxiosGet } from 'my-vue-hooks/hooks/useFetch'
-import { useTableRequest } from 'my-vue-hooks/hooks/useTable'
-import { useTableStatic } from 'my-vue-hooks/hooks/useTable'
+// 链式调用
+await fetchInstance.sendGet('/api/users')
+  .then((data) => console.log(data))
+  .catchHttp((error) => console.error(error))
 ```
 

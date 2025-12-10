@@ -56,3 +56,17 @@ export type {
   OnFetchErrorResult,
 } from './fetch.types'
 
+// 导出缓存管理器
+export {
+  globalCacheManager,
+  CacheManager,
+  defaultCacheKeyGenerator,
+  type CacheKeyGenerator,
+} from './cacheManager'
+
+// 导出请求队列管理器
+export {
+  globalRequestQueue,
+  RequestQueue,
+} from './requestQueue'
+

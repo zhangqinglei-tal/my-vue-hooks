@@ -1,0 +1,14 @@
+---
+alwaysApply: true
+---
+
+**特别注意：开发过程中一定注意ts类型的完整与正确性，开发与修改每一个功能都应该有对应的单例测试** 
+## 如果我提到增加一个示例，指的是 dev/components/toAwaitFetch/BestPractice.vue 为这个文件增加示例
+
+## 如果我提到文档，指的是 docs/hooks/toAwaitFetch.md
+
+
+## 开发修改 src/hooks/toAwaitFetch/toAwaitFetch.ts 文件时需要同步修改以下相关文件
+
+- api文档: src/hooks/toAwaitFetch/toAwaitFetch.api.ts
+- 对外文档: docs/hooks/toAwaitFetch.md

@@ -23,9 +23,14 @@ export default defineConfig({
   },
   
   themeConfig: {
+    outline: {
+      level: 'deep',
+      label: '页面导航'
+    },
     nav: [
       { text: '指南', link: '/guide/' },
       { text: 'Hooks', link: '/hooks/' },
+      { text: '示例', link: '/examples/cache-and-dedupe-examples' },
       { text: 'GitHub', link: 'https://github.com/zhangqinglei-tal/my-vue-hooks' }
     ],
     
@@ -47,17 +52,26 @@ export default defineConfig({
             {
               text: '数据请求',
               items: [
-                { text: 'useFetch', link: '/hooks/useFetch' },
-                { text: 'useAxiosFetch', link: '/hooks/useAxiosFetch' }
+                // { text: 'useFetch', link: '/hooks/useFetch' },
+                // { text: 'useAxiosFetch', link: '/hooks/useAxiosFetch' },
+                { text: 'toAwaitFetch', link: '/hooks/toAwaitFetch' }
               ]
             },
-            {
-              text: '表格管理',
-              items: [
-                { text: 'useTableRequest', link: '/hooks/useTableRequest' },
-                { text: 'useTableStatic', link: '/hooks/useTableStatic' }
-              ]
-            }
+            // {
+            //   text: '表格管理',
+            //   items: [
+            //     { text: 'useTableRequest', link: '/hooks/useTableRequest' },
+            //     { text: 'useTableStatic', link: '/hooks/useTableStatic' }
+            //   ]
+            // }
+          ]
+        }
+      ],
+      '/examples/': [
+        {
+          text: '使用示例',
+          items: [
+            { text: '缓存和请求队列', link: '/examples/cache-and-dedupe-examples' }
           ]
         }
       ]

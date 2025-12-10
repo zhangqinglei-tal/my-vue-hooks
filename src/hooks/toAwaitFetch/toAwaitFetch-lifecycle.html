@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>toAwaitFetch 请求生命周期脑图</title>
+    <script src="./mermaid.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+          'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1600px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+      }
+
+      .header p {
+        opacity: 0.9;
+        font-size: 1.1em;
+      }
+
+      .content {
+        padding: 40px;
+      }
+
+      .mermaid-container {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+        overflow-x: auto;
+        min-height: 800px;
+      }
+
+      .section {
+        margin: 30px 0;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+      }
+
+      .section h2 {
+        color: #2c3e50;
+        margin-bottom: 15px;
+        font-size: 1.8em;
+      }
+
+      .section h3 {
+        color: #34495e;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        font-size: 1.3em;
+      }
+
+      .section ul {
+        margin-left: 20px;
+        color: #666;
+      }
+
+      .section li {
+        margin: 8px 0;
+      }
+
+      .section code {
+        background: #e9ecef;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 0.9em;
+        color: #e83e8c;
+      }
+
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin: 20px 0;
+        padding: 15px;
+        background: white;
+        border-radius: 6px;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .legend-color {
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+      }
+
+      .legend-color.success {
+        background: #d4edda;
+        border: 2px solid #27ae60;
+      }
+
+      .legend-color.error {
+        background: #f8d7da;
+        border: 2px solid #e74c3c;
+      }
+
+      .legend-color.warning {
+        background: #fff3cd;
+        border: 2px solid #ffc107;
+      }
+
+      .legend-color.info {
+        background: #e1f5ff;
+        border: 2px solid #3498db;
+      }
+
+      @media (max-width: 768px) {
+        .content {
+          padding: 20px;
+        }
+
+        .header h1 {
+          font-size: 2em;
+        }
+
+        .mermaid-container {
+          padding: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>toAwaitFetch 请求生命周期脑图</h1>
+        <p>完整的请求流程可视化</p>
+      </div>
+
+      <div class="content">
+        <div class="legend">
+          <div class="legend-item">
+            <div class="legend-color info"></div>
+            <span>开始/结束节点</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color success"></div>
+            <span>成功状态</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color error"></div>
+            <span>错误状态</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color warning"></div>
+            <span>重试逻辑</span>
+          </div>
+        </div>
+
+        <div class="mermaid-container">
+          <div class="mermaid">
+graph TD
+    Start([开始请求]) --> MergeConfig["合并配置<br/>GlobalConfig + RequestConfig"]
+    
+    MergeConfig --> ProcessHeaders["处理请求头<br/>headers 函数或对象"]
+    ProcessHeaders --> BuildURL["构建完整 URL<br/>baseURL + url"]
+    
+    BuildURL --> CheckTimeout{检查超时配置}
+    CheckTimeout -->|有超时| SetTimeout["设置超时定时器"]
+    CheckTimeout -->|无超时| SendRequest["发送 Fetch 请求"]
+    SetTimeout --> SendRequest
+    
+    SendRequest --> NetworkCheck{网络请求结果}
+    
+    NetworkCheck -->|网络异常| NetworkError["网络错误<br/>onNetworkError"]
+    NetworkCheck -->|超时| TimeoutError["超时错误<br/>type: timeout"]
+    NetworkCheck -->|成功| ParseResponse["解析响应数据<br/>根据 responseType"]
+    
+    NetworkError --> CheckRetry1{检查重试}
+    TimeoutError --> CheckRetry2{检查重试}
+    
+    ParseResponse --> ValidateStatus{验证状态码<br/>validateStatus}
+    
+    ValidateStatus -->|验证失败| HttpError["HTTP 错误<br/>onHttpError<br/>type: http"]
+    ValidateStatus -->|验证通过| ValidateResponse{验证响应内容<br/>validateResponse}
+    
+    HttpError --> CheckRetry3{检查重试}
+    
+    ValidateResponse -->|验证失败| BusinessError["业务错误<br/>onBusinessError<br/>type: business"]
+    ValidateResponse -->|验证通过| TransformResponse["数据转换<br/>transformResponse"]
+    
+    TransformResponse --> Success[请求成功]
+    
+    BusinessError --> CheckRetry4{检查重试}
+    
+    CheckRetry1 -->|重试| RetryLogic["重试逻辑<br/>shouldRetry 判断<br/>延迟 delay"]
+    CheckRetry2 -->|重试| RetryLogic
+    CheckRetry3 -->|重试| RetryLogic
+    CheckRetry4 -->|重试| RetryLogic
+    
+    CheckRetry1 -->|不重试| ReturnError1[返回错误结果]
+    CheckRetry2 -->|不重试| ReturnError2[返回错误结果]
+    CheckRetry3 -->|不重试| ReturnError3[返回错误结果]
+    CheckRetry4 -->|不重试| ReturnError4[返回错误结果]
+    
+    RetryLogic --> CheckMaxAttempts{"检查重试次数<br/>attempt 小于 maxRetryCount"}
+    CheckMaxAttempts -->|未超限| WaitDelay["等待延迟<br/>delay 毫秒"]
+    CheckMaxAttempts -->|超限| ReturnError5[返回错误结果]
+    WaitDelay --> SendRequest
+    
+    Success --> ReturnSuccess["返回成功结果<br/>FetchResult"]
+    
+    ReturnSuccess --> Then["then 成功回调"]
+    
+    ReturnError1 --> CheckHandled{是否被链式调用<br/>处理错误或解构}
+    ReturnError2 --> CheckHandled
+    ReturnError3 --> CheckHandled
+    ReturnError4 --> CheckHandled
+    ReturnError5 --> CheckHandled
+    
+    CheckHandled -->|链式调用 catchHttp| CatchHttp["catchHttp HTTP错误"]
+    CheckHandled -->|链式调用 catchBusiness| CatchBusiness["catchBusiness 业务错误"]
+    CheckHandled -->|链式调用 catchNetwork| CatchNetwork["catchNetwork 网络和超时错误"]
+    CheckHandled -->|解构| Destructure["解构 [data, error, success]"]
+    CheckHandled -->|未处理| Throw[抛出请求错误]
+    
+    Then --> End([结束])
+    CatchHttp --> End
+    CatchBusiness --> End
+    Catch --> End
+    Destructure --> End
+    Throw --> End
+    
+    style Start fill:#e1f5ff,stroke:#3498db,stroke-width:3px
+    style Success fill:#d4edda,stroke:#27ae60,stroke-width:2px
+    style TransformResponse fill:#d4edda,stroke:#27ae60,stroke-width:2px
+    style NetworkError fill:#f8d7da,stroke:#e74c3c,stroke-width:2px
+    style TimeoutError fill:#f8d7da,stroke:#e74c3c,stroke-width:2px
+    style HttpError fill:#f8d7da,stroke:#e74c3c,stroke-width:2px
+    style BusinessError fill:#f8d7da,stroke:#e74c3c,stroke-width:2px
+    style ReturnSuccess fill:#d4edda,stroke:#27ae60,stroke-width:2px
+    style ReturnError1 fill:#f8d7da,stroke:#e74c3c,stroke-width:2px
+    style ReturnError2 fill:#f8d7da,stroke:#e74c3c,stroke-width:2px
+    style ReturnError3 fill:#f8d7da,stroke:#e74c3c,stroke-width:2px
+    style ReturnError4 fill:#f8d7da,stroke:#e74c3c,stroke-width:2px
+    style ReturnError5 fill:#f8d7da,stroke:#e74c3c,stroke-width:2px
+    style End fill:#e1f5ff,stroke:#3498db,stroke-width:3px
+    style RetryLogic fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style Then fill:#d4edda,stroke:#27ae60,stroke-width:2px
+    style CatchHttp fill:#f8d7da,stroke:#e74c3c,stroke-width:2px
+    style CatchBusiness fill:#f8d7da,stroke:#e74c3c,stroke-width:2px
+    style Catch fill:#f8d7da,stroke:#e74c3c,stroke-width:2px
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>生命周期阶段说明</h2>
+
+          <h3>1. 请求准备阶段</h3>
+          <ul>
+            <li><strong>合并配置</strong>：全局配置 + 请求配置（请求配置优先级更高）</li>
+            <li><strong>处理请求头</strong>：支持函数动态生成 headers</li>
+            <li><strong>构建 URL</strong>：baseURL + url</li>
+          </ul>
+
+          <h3>2. 请求发送阶段</h3>
+          <ul>
+            <li><strong>超时控制</strong>：如果设置了 timeout，启动超时定时器</li>
+            <li><strong>发送请求</strong>：使用 fetch API 发送请求</li>
+          </ul>
+
+          <h3>3. 响应处理阶段</h3>
+          <ul>
+            <li><strong>网络检查</strong>：捕获网络异常、跨域错误</li>
+            <li><strong>超时检查</strong>：检查是否超时</li>
+            <li><strong>解析响应</strong>：根据 responseType 解析数据（json/text/blob/arraybuffer/formData）</li>
+            <li><strong>状态码验证</strong>：使用 <code>validateStatus</code> 验证 HTTP 状态码</li>
+            <li><strong>响应内容验证</strong>：使用 <code>validateResponse</code> 验证业务逻辑</li>
+            <li><strong>数据转换</strong>：使用 <code>transformResponse</code> 将原始响应数据转换为业务使用的格式（仅在 validateResponse 验证通过后执行）</li>
+          </ul>
+
+          <h3>4. 错误处理阶段</h3>
+          <ul>
+            <li><strong>HTTP 错误</strong>：validateStatus 返回 false → 触发 <code>onHttpError</code> → 错误类型 'http'</li>
+            <li><strong>业务错误</strong>：validateResponse 返回 false → 触发 <code>onBusinessError</code> → 错误类型 'business'</li>
+            <li><strong>网络错误</strong>：网络异常、跨域 → 触发 <code>onNetworkError</code> → 错误类型 'network'</li>
+            <li><strong>超时错误</strong>：请求超时 → 错误类型 'timeout'</li>
+          </ul>
+
+          <h3>5. 重试机制</h3>
+          <ul>
+            <li><strong>重试条件</strong>：
+              <ul>
+                <li><code>retry.enabled === true</code></li>
+                <li><code>attempt < maxRetryCount</code></li>
+                <li><code>shouldRetry</code> 返回 true（如果提供了自定义函数）</li>
+              </ul>
+            </li>
+            <li><strong>重试流程</strong>：
+              <ol>
+                <li>检查是否满足重试条件</li>
+                <li>等待 delay 毫秒</li>
+                <li>重新发送请求</li>
+                <li>重复上述流程</li>
+              </ol>
+            </li>
+          </ul>
+
+          <h3>6. 结果返回阶段</h3>
+          <ul>
+            <li><strong>成功</strong>：返回 <code>FetchResult</code>，数组格式 <code>[data, undefined, true]</code>
+              <ul>
+                <li>如果配置了 <code>transformResponse</code>，返回转换后的数据</li>
+                <li>如果未配置，返回原始响应数据</li>
+              </ul>
+            </li>
+            <li><strong>失败</strong>：返回 <code>FetchResult</code>，数组格式 <code>[undefined, error, false]</code></li>
+          </ul>
+
+          <h3>7. 结果处理方式</h3>
+          <ul>
+            <li><strong>链式调用</strong>（sendGet/sendPost）：
+              <ul>
+                <li><code>.then()</code> - 处理成功</li>
+                <li><code>.catchHttp()</code> - 处理 HTTP 错误</li>
+                <li><code>.catchBusiness()</code> - 处理业务错误</li>
+                <li><code>.catchNetwork()</code> - 处理网络和超时错误</li>
+              </ul>
+            </li>
+            <li><strong>解构</strong>（所有方法）：
+              <ul>
+                <li><code>const [data, error, success] = await ...</code></li>
+              </ul>
+            </li>
+            <li><strong>统一处理方式</strong>（所有方法）：
+              <ul>
+                <li>所有方法都返回 <code>FetchResultPromise</code>，支持链式调用和解构</li>
+                <li>不再抛出错误，错误信息包含在数组的第二项 <code>FetchResult[1]</code> 中</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      mermaid.initialize({ 
+        startOnLoad: true,
+        theme: 'default',
+        flowchart: {
+          useMaxWidth: true,
+          htmlLabels: true,
+          curve: 'basis',
+          padding: 20
+        }
+      });
+    </script>
+  </body>
+</html>
+

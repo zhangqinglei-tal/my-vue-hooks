@@ -208,6 +208,150 @@ const { data, loading } = useAxiosPost('/api/upload', {
 })
 ```
 
+### 请求缓存
+
+启用缓存后，相同的请求会使用缓存结果，避免重复请求：
+
+```ts
+import { useAxiosGet } from 'my-vue-hooks'
+
+// 启用缓存，默认缓存 5 分钟
+const { data, loading } = useAxiosGet('/api/user/info', {}, {
+  cache: true
+})
+
+// 自定义缓存时间（10 分钟）
+const { data, loading } = useAxiosGet('/api/user/info', {}, {
+  cache: true,
+  cacheTTL: 10 * 60 * 1000 // 10 分钟
+})
+
+// 自定义缓存键生成器（只基于 URL，忽略参数）
+import { defaultCacheKeyGenerator } from 'my-vue-hooks'
+
+const customKeyGenerator = (config) => {
+  return `${config.method}:${config.url}`
+}
+
+const { data, loading } = useAxiosGet('/api/user/info', {}, {
+  cache: true,
+  cacheKeyGenerator: customKeyGenerator
+})
+```
+
+**缓存说明：**
+- 缓存基于请求的 URL、方法、参数和数据生成唯一键
+- 默认缓存时间为 5 分钟
+- 重试时不会使用缓存，确保获取最新数据
+- 缓存存储在内存中，页面刷新后会清空
+
+### 请求队列（去重）
+
+启用请求队列后，相同的请求只会执行一次，其他请求会等待第一个请求完成并共享结果：
+
+```ts
+import { useAxiosGet } from 'my-vue-hooks'
+
+// 启用请求队列
+const { data, loading } = useAxiosGet('/api/user/info', {}, {
+  dedupe: true
+})
+
+// 在多个组件中同时调用相同的请求
+// 第一个请求会执行，其他请求会等待并共享结果
+```
+
+**使用场景：**
+- 多个组件同时请求相同的数据
+- 用户快速点击按钮触发多次相同请求
+- 避免重复的网络请求，提升性能
+
+**示例：**
+
+```vue
+<script setup lang="ts">
+import { useAxiosGet } from 'my-vue-hooks'
+
+// 组件 A
+const { data: dataA, loading: loadingA } = useAxiosGet('/api/user/info', {}, {
+  dedupe: true
+})
+
+// 组件 B（同时请求相同的数据）
+const { data: dataB, loading: loadingB } = useAxiosGet('/api/user/info', {}, {
+  dedupe: true
+})
+
+// 两个组件会共享同一个请求，只会发送一次网络请求
+</script>
+```
+
+### 同时使用缓存和队列
+
+可以同时启用缓存和请求队列，获得最佳性能：
+
+```ts
+import { useAxiosGet } from 'my-vue-hooks'
+
+const { data, loading } = useAxiosGet('/api/user/info', {}, {
+  cache: true,        // 启用缓存
+  dedupe: true,      // 启用请求队列
+  cacheTTL: 5 * 60 * 1000 // 缓存 5 分钟
+})
+```
+
+**执行顺序：**
+1. 首先检查缓存，如果有缓存且未过期，直接返回缓存数据
+2. 如果没有缓存，检查是否有相同的请求正在进行
+3. 如果有相同请求正在进行，加入队列等待
+4. 如果没有，执行新的请求
+5. 请求成功后，更新缓存并通知队列中的所有等待者
+
+### 缓存管理
+
+可以手动管理缓存：
+
+```ts
+import { globalCacheManager } from 'my-vue-hooks'
+
+// 获取缓存
+const cached = globalCacheManager.get('cache-key')
+
+// 设置缓存
+globalCacheManager.set('cache-key', data, 60000) // 缓存 1 分钟
+
+// 删除缓存
+globalCacheManager.delete('cache-key')
+
+// 清空所有缓存
+globalCacheManager.clear()
+
+// 清理过期缓存
+globalCacheManager.cleanup()
+
+// 获取缓存统计信息
+const stats = globalCacheManager.getStats()
+console.log(stats) // { size: 10, expiredCount: 2, maxSize: 100 }
+```
+
+### 请求队列管理
+
+可以手动管理请求队列：
+
+```ts
+import { globalRequestQueue } from 'my-vue-hooks'
+
+// 取消队列中的请求
+globalRequestQueue.cancel('request-key')
+
+// 清空所有队列
+globalRequestQueue.clear()
+
+// 获取队列统计信息
+const stats = globalRequestQueue.getStats()
+console.log(stats) // { pendingRequests: 2, queuedRequests: 5 }
+```
+
 ### Promise 版本
 
 如果不需要响应式，可以使用 Promise 版本：
@@ -216,13 +360,23 @@ const { data, loading } = useAxiosPost('/api/upload', {
 import { useGetPromise, usePostPromise } from 'my-vue-hooks'
 
 // GET 请求
-const data = await useGetPromise<UserInfo>('/api/user/info')
+const result = await useGetPromise<UserInfo>('/api/user/info', { id: 1 })
+if (result.error) {
+  console.error(result.error)
+} else {
+  console.log(result.data)
+}
 
 // POST 请求
 const result = await usePostPromise<CreateResult>(
   '/api/user/create',
   { name: 'John', age: 30 }
 )
+if (result.error) {
+  console.error(result.error)
+} else {
+  console.log(result.data)
+}
 ```
 
 ## API
@@ -253,6 +407,10 @@ interface UseAxiosFetchOptions {
   refetchOnReconnect?: boolean // 网络恢复后重新请求
   refetchOnFocus?: boolean    // 页面可见时重新请求
   cancelOnBlur?: boolean      // 页面不可见时取消请求
+  cache?: boolean             // 是否启用缓存
+  cacheTTL?: number           // 缓存过期时间（毫秒）
+  cacheKeyGenerator?: CacheKeyGenerator // 自定义缓存键生成器
+  dedupe?: boolean            // 是否启用请求队列（去重）
   // ... 其他 Axios 配置选项
 }
 ```

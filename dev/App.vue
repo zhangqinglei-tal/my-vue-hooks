@@ -1,0 +1,137 @@
+<template>
+  <div id="app">
+
+
+    <!-- toAwaitFetch 演示 -->
+    <ToAwaitFetchPlayground />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useCounter } from '../src/hooks/useCounter'
+import { useToggle } from '../src/hooks/useToggle'
+import { useLocalStorage } from '../src/hooks/useLocalStorage'
+import ToAwaitFetchPlayground from './components/ToAwaitFetchPlayground.vue'
+
+// useCounter
+const counter = useCounter(0)
+
+// useToggle
+const toggle = useToggle(false)
+
+// useLocalStorage
+const storage = useLocalStorage('demo-storage', '')
+const storageValue = ref(storage.value || '')
+
+// 处理 localStorage 变化
+const handleStorageChange = () => {
+  storage.value = storageValue.value
+}
+
+// 清除 localStorage
+const handleStorageClear = () => {
+  storage.value = ''
+  storageValue.value = ''
+  localStorage.removeItem('demo-storage')
+}
+</script>
+
+<style scoped>
+#app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+header {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+}
+
+.subtitle {
+  color: #7f8c8d;
+  font-size: 1rem;
+}
+
+.demo-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+}
+
+.demo-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 0.5rem;
+}
+
+.demo-content {
+  margin-top: 1rem;
+}
+
+button {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  transition: background 0.3s;
+}
+
+button:hover:not(:disabled) {
+  background: #2980b9;
+}
+
+button:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+}
+
+.result {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #ecf0f1;
+  border-radius: 4px;
+  border-left: 4px solid #3498db;
+}
+
+.result pre {
+  background: #2c3e50;
+  color: #ecf0f1;
+  padding: 1rem;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.result.error {
+  border-left-color: #e74c3c;
+  background: #fee;
+}
+
+.result.success {
+  border-left-color: #27ae60;
+  background: #efe;
+}
+
+</style>
+

@@ -11,6 +11,8 @@ import {
   shouldRetry,
   mergeUrlParams,
 } from './fetchUtils'
+import { globalCacheManager } from './cacheManager'
+import { globalRequestQueue } from './requestQueue'
 
 
 /**
@@ -190,6 +192,10 @@ export function useFetch<T = any>(
     cancelOnBlur = false,
     customOptions,
     debug = false,
+    cache = false,
+    cacheTTL,
+    cacheKeyGenerator,
+    dedupe = false,
   } = mergedOptions
 
   // 状态管理
@@ -240,55 +246,82 @@ export function useFetch<T = any>(
       console.log(`[useFetch Execute] ${isRetry ? `第 ${currentRetryCount + 1} 次重试` : '初始请求'}，当前重试计数：${currentRetryCount}，最大重试次数：${retryCount}`)
     }
 
-    // 重置状态
-    error.value = undefined
-    aborted.value = false
-    loading.value = true
-    isFinished.value = false
-    canAbort.value = true
+    // 获取 URL 和生成请求键（用于缓存和队列）
+    let requestUrl = toValue(url)
+    const requestKey = (cache || dedupe) && !isRetry
+      ? (cacheKeyGenerator || globalCacheManager.generateKey.bind(globalCacheManager))({
+          url: requestUrl,
+          method: currentMethod.value,
+          params: currentParams.value,
+          data: currentData.value,
+          headers: currentHeaders.value,
+        })
+      : null
 
-    // 创建 AbortController
-    abortController = new AbortController()
-
-    // 检查网络状态
-    if (typeof navigator !== 'undefined' && !navigator.onLine) {
-      isOffline = true
-      wasOfflineDuringRequest = true
-      if (refetchOnReconnect) {
+    // 1. 检查缓存（仅在非重试时）
+    if (cache && requestKey && !isRetry) {
+      const cachedData = globalCacheManager.get<T>(requestKey)
+      if (cachedData !== null) {
+        data.value = cachedData
         loading.value = false
         isFinished.value = true
         canAbort.value = false
-        return { data: data.value, error: undefined }
-      }
-    } else {
-      isOffline = false
-      if (!isRetry) {
-        wasOfflineDuringRequest = false
+        error.value = undefined
+        return { data: cachedData, error: undefined }
       }
     }
 
-    // 检查页面可见性
-    if (typeof document !== 'undefined' && document.hidden) {
-      isVisible = false
-      if (cancelOnBlur && abortController) {
-        abortController.abort()
-        aborted.value = true
-        loading.value = false
-        isFinished.value = true
-        canAbort.value = false
-        wasCancelledDueToBlur = true
-        return { data: data.value, error: undefined }
-      }
-    } else {
-      isVisible = true
-      if (!isRetry) {
-        wasCancelledDueToBlur = false
-      }
-    }
+    // 2. 执行请求（支持队列去重）
+    const executeRequest = async (): Promise<{ data: T | undefined; error: Error | undefined }> => {
+      // 重置状态
+      error.value = undefined
+      aborted.value = false
+      loading.value = true
+      isFinished.value = false
+      canAbort.value = true
 
-    try {
-      // 获取 URL
-      let requestUrl = toValue(url)
+      // 创建 AbortController
+      abortController = new AbortController()
+
+      // 检查网络状态
+      if (typeof navigator !== 'undefined' && !navigator.onLine) {
+        isOffline = true
+        wasOfflineDuringRequest = true
+        if (refetchOnReconnect) {
+          loading.value = false
+          isFinished.value = true
+          canAbort.value = false
+          return { data: data.value, error: undefined }
+        }
+      } else {
+        isOffline = false
+        if (!isRetry) {
+          wasOfflineDuringRequest = false
+        }
+      }
+
+      // 检查页面可见性
+      if (typeof document !== 'undefined' && document.hidden) {
+        isVisible = false
+        if (cancelOnBlur && abortController) {
+          abortController.abort()
+          aborted.value = true
+          loading.value = false
+          isFinished.value = true
+          canAbort.value = false
+          wasCancelledDueToBlur = true
+          return { data: data.value, error: undefined }
+        }
+      } else {
+        isVisible = true
+        if (!isRetry) {
+          wasCancelledDueToBlur = false
+        }
+      }
+
+      try {
+        // 重新获取 URL（可能在 beforeFetch 中被修改）
+        requestUrl = toValue(url)
 
       // 构建 fetch 配置
       let fetchConfig: FetchRequestConfig = {
@@ -543,6 +576,11 @@ export function useFetch<T = any>(
       // 更新数据
       data.value = responseData
 
+      // 请求成功后，更新缓存（仅在非重试时）
+      if (cache && requestKey && !isRetry) {
+        globalCacheManager.set(requestKey, responseData, cacheTTL)
+      }
+
       // 执行响应回调
       for (const callback of responseCallbacks) {
         await callback(fetchResponse)
@@ -670,6 +708,14 @@ export function useFetch<T = any>(
       canAbort.value = false
 
       return { data: data.value, error: error.value }
+    }
+    }
+
+    // 如果启用队列，使用队列管理器；否则直接执行
+    if (dedupe && requestKey && !isRetry) {
+      return await globalRequestQueue.enqueue(requestKey, executeRequest)
+    } else {
+      return await executeRequest()
     }
   }
 
