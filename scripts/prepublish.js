@@ -32,11 +32,7 @@ if (!existsSync(distPath)) {
 }
 
 // 2. 检查必要的文件是否存在
-const requiredFiles = [
-  'dist/my-vue-hooks.es.js',
-  'dist/my-vue-hooks.cjs.js',
-  'dist/index.d.ts',
-]
+const requiredFiles = ['dist/index.es.js', 'dist/index.cjs.js', 'dist/index.d.ts']
 
 for (const file of requiredFiles) {
   const filePath = resolve(__dirname, '..', file)

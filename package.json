@@ -25,7 +25,7 @@
   "sideEffects": false,
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build && tsc --emitDeclarationOnly",
     "build:docs": "vitepress build docs",
     "dev:docs": "vitepress dev docs",
     "preview:docs": "vitepress preview docs",
