@@ -1,30 +1,20 @@
 {
-  "name": "my-vue-hooks",
+  "name": "xn-fe-tools",
   "version": "1.0.0",
-  "description": "Collection of essential Vue Composition API utilities",
+  "description": "A powerful fetch wrapper with chaining & tuple API",
   "type": "module",
-  "main": "./dist/my-vue-hooks.cjs.js",
-  "module": "./dist/my-vue-hooks.es.js",
+  "main": "./dist/index.cjs.js",
+  "module": "./dist/index.es.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/my-vue-hooks.es.js"
+        "default": "./dist/index.es.js"
       },
       "require": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/my-vue-hooks.cjs.js"
-      }
-    },
-    "./*": {
-      "import": {
-        "types": "./dist/*.d.ts",
-        "default": "./dist/*.js"
-      },
-      "require": {
-        "types": "./dist/*.d.ts",
-        "default": "./dist/*.js"
+        "default": "./dist/index.cjs.js"
       }
     },
     "./package.json": "./package.json"
@@ -74,9 +64,11 @@
       "optional": true
     }
   },
+  "git-checks": false,
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/test-utils": "^2.4.6",
+    "@types/node": "^22.9.4",
     "axios": "^1.13.2",
     "eslint": "^9.39.1",
     "jsdom": "^27.2.0",

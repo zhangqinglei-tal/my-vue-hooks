@@ -216,6 +216,16 @@ export interface RequestConfig<TRequest = any, TResponse = any> {
    * @default 'include'
    */
   credentials?: CredentialsMode;
+  /**
+   * 请求数据类型
+   * @default 'json'
+   */
+  requestType?: RequestType;
+  /**
+   * 响应数据类型
+   * @default 'json'
+   */
+  responseType?: ResponseType;
 }
 
 /**
@@ -281,6 +291,16 @@ export interface GlobalConfig<TResponse = any> {
    * @default 'include'
    */
   credentials?: CredentialsMode;
+  /**
+   * 请求数据类型
+   * @default 'json'
+   */
+  requestType?: RequestType;
+  /**
+   * 响应数据类型
+   * @default 'json'
+   */
+  responseType?: ResponseType;
 }
 
 /**
@@ -414,6 +434,15 @@ export interface FetchInstance {
    * @param config 全局配置
    */
   setGlobalConfig(config: GlobalConfig): void;
+  /**
+   * 获取当前全局配置
+   */
+  getGlobalConfig(): GlobalConfig;
+  /**
+   * 合并全局配置
+   * @param config 部分全局配置
+   */
+  mergeGlobalConfig(config: Partial<GlobalConfig>): void;
 
   /**
    * GET 请求（支持链式调用）
@@ -502,7 +531,11 @@ export type ToAwaitFetch = CreateFetch &
     | 'sendPostBlob'
     | 'sendGetBlob'
     | 'setGlobalConfig'
+    | 'getGlobalConfig'
+    | 'mergeGlobalConfig'
   > & {
+    (config: RequestConfig<any, any>): FetchResultPromise<any>;
+    (config?: GlobalConfig): FetchInstance;
     /**
      * 创建新实例的便捷方法（默认实例上的别名）
      */

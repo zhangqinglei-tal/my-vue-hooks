@@ -569,8 +569,8 @@ class FetchInstanceImpl implements FetchInstance {
     this.sendPostBlob = this.sendPostBlob.bind(this);
     this.sendGetBlob = this.sendGetBlob.bind(this);
     this.setGlobalConfig = this.setGlobalConfig.bind(this);
-    this.getGlobalConfig = this.getGlobalConfig.bind(this);
-    this.mergeGlobalConfig = this.mergeGlobalConfig.bind(this);
+    // this.getGlobalConfig = this.getGlobalConfig.bind(this);
+    // this.mergeGlobalConfig = this.mergeGlobalConfig.bind(this);
   }
 
   /**
@@ -953,6 +953,7 @@ class FetchInstanceImpl implements FetchInstance {
       url,
       method: 'POST',
       data,
+      requestType: 'json',
       responseType: 'blob',
     } as any);
   }
@@ -1046,18 +1047,28 @@ export const cancel = <T = any>(promise: FetchResultPromise<T>): void => {
 
 /**
  * 默认实例（既是工厂函数也是实例）
- * 手动绑定所有方法，确保 this 正确指向实例
+ * 支持 axios 风格调用：toAwaitFetch(config) 直接发起请求
  */
-const toAwaitFetch = Object.assign(createInstance, {
-  create: createInstance,
-  sendGet: defaultInstance.sendGet.bind(defaultInstance),
-  sendPost: defaultInstance.sendPost.bind(defaultInstance),
-  sendPostForm: defaultInstance.sendPostForm.bind(defaultInstance),
-  sendPostBlob: defaultInstance.sendPostBlob.bind(defaultInstance),
-  sendGetBlob: defaultInstance.sendGetBlob.bind(defaultInstance),
-  setGlobalConfig: defaultInstance.setGlobalConfig.bind(defaultInstance),
-  cancel,
-}) as ToAwaitFetch;
+const toAwaitFetch = Object.assign(
+  (config?: GlobalConfig | RequestConfig): FetchResultPromise | FetchInstance => {
+    if (config && typeof config === 'object' && 'url' in config) {
+      return defaultInstance.request(config as RequestConfig);
+    }
+    return createInstance(config as GlobalConfig);
+  },
+  {
+    create: createInstance,
+    sendGet: defaultInstance.sendGet.bind(defaultInstance),
+    sendPost: defaultInstance.sendPost.bind(defaultInstance),
+    sendPostForm: defaultInstance.sendPostForm.bind(defaultInstance),
+    sendPostBlob: defaultInstance.sendPostBlob.bind(defaultInstance),
+    sendGetBlob: defaultInstance.sendGetBlob.bind(defaultInstance),
+    setGlobalConfig: defaultInstance.setGlobalConfig.bind(defaultInstance),
+    // getGlobalConfig: defaultInstance.getGlobalConfig.bind(defaultInstance),
+    // mergeGlobalConfig: defaultInstance.mergeGlobalConfig.bind(defaultInstance),
+    cancel,
+  }
+) as ToAwaitFetch;
 
 export { createInstance, FetchInstanceImpl };
 export default toAwaitFetch;

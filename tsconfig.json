@@ -4,6 +4,10 @@
     "module": "ESNext",
     "lib": ["ESNext", "DOM"],
     "moduleResolution": "bundler",
+    "baseUrl": ".",
+    "paths": {
+      "@src/*": ["src/*"]
+    },
     "declaration": true,
     "declarationMap": true,
     "outDir": "dist",
