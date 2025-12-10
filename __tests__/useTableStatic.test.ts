@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { ref } from 'vue'
-import { useTableStatic } from '../useTable/useTableStatic'
+import { useTableStatic } from '../src/hooks/useTable/useTableStatic'
 
 interface User {
   id: number

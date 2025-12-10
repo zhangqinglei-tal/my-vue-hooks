@@ -45,7 +45,7 @@ for (const file of requiredFiles) {
 
 // 3. 运行测试
 console.log('📋 Running tests...')
-exec('pnpm test --run')
+exec('pnpm vitest run __tests__')
 
 // 4. 类型检查
 console.log('\n📋 Type checking...')

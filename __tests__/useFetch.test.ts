@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { ref } from 'vue'
-import { useFetch, useFetchGet, useFetchPost } from '../useFetch/fetch'
+import { useFetch, useFetchGet, useFetchPost } from '../src/hooks/useFetch/fetch'
 
 // Mock fetch
 const mockFetch = vi.fn()
@@ -191,6 +191,7 @@ describe('useFetch', () => {
     })
 
     await execute()
+    await new Promise(resolve => setTimeout(resolve, 50))
 
     expect(callCount).toBe(3)
   })

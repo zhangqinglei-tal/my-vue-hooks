@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { useCounter } from '../useCounter'
+import { useCounter } from '../src/hooks/useCounter'
 
 describe('useCounter', () => {
   it('should initialize with default value', () => {

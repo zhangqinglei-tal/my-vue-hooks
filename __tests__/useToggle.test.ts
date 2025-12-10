@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { useToggle } from '../useToggle'
+import { useToggle } from '../src/hooks/useToggle'
 
 describe('useToggle', () => {
   it('should initialize with default value', () => {
