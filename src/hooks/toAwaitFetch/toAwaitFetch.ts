@@ -274,17 +274,18 @@ const parseJsonSafe = async <T = any>(response: Response): Promise<T> => {
   if (isEmptyBody(response)) {
     return undefined as T;
   }
-  const rawText = await response.text();
+  let rawText: string;
+  try {
+    rawText = await response.text();
+  } catch {
+    return undefined as T;
+  }
   if (!rawText.trim()) {
     return undefined as T;
   }
   try {
     return JSON.parse(rawText) as T;
   } catch (error) {
-    // const parseError =
-    //   error instanceof Error ? error : new Error('Unexpected JSON parse error');
-    // parseError.name = 'JSONParseError';
-    // throw parseError;
     return undefined as T;
   }
 };
