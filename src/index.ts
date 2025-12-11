@@ -9,6 +9,7 @@
 // // 导出 useFetch
 // export * from './hooks/useFetch'
 
+export * from './hooks/toAwaitFetch/toAwaitFetch.api'
 export {
   default as toAwaitFetch,
   sendGet,

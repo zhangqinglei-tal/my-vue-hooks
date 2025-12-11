@@ -29,8 +29,14 @@ export default defineConfig(({ command }) => {
         open: true,
         proxy: {
           // 代理 /api 路径到后端服务器
-          '/api': {
-            target: 'http://localhost:9900',
+          // '/api': {
+          //   target: 'http://localhost:9900',
+          //   changeOrigin: true,
+          //   // 可选：重写路径，如果后端不需要 /api 前缀，可以去掉
+          //   // rewrite: (path) => path.replace(/^\/api/, '')
+          // }
+          '/testApi': {
+            target: 'http://127.0.0.1:900',
             changeOrigin: true,
             // 可选：重写路径，如果后端不需要 /api 前缀，可以去掉
             // rewrite: (path) => path.replace(/^\/api/, '')

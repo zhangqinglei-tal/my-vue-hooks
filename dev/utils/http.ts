@@ -20,8 +20,8 @@ const httpInstance = createInstance({
   // 基础配置
   // 开发环境：使用相对路径，通过 Vite 代理转发到 http://localhost:9900
   // 生产环境：可以设置为实际的 API 地址
-  baseURL: '',  // 使用相对路径，通过 Vite 代理
-  timeout: 5000,                                      // 请求超时时间（毫秒）
+  baseURL: 'http://localhost:9900/',  // 使用相对路径，通过 Vite 代理
+  timeout: 30000,                                      // 请求超时时间（毫秒）
   
   // 请求头配置
   // headers: {
@@ -44,6 +44,8 @@ const httpInstance = createInstance({
   
   // 错误处理钩子
   onHttpError: async (error, status, response, suppressError) => {
+    console.log('response', response)
+    console.log('status', status)
     // 统一处理 HTTP 错误（如 404, 500）
     if (status === 401) {
       // 未授权，跳转登录（实际项目中）
@@ -52,6 +54,8 @@ const httpInstance = createInstance({
       alert('这里是401的错误处理钩子，并且调用了suppressError() 来取消抛错，用户不处理也不会抛出错误')
       // 如果已经在错误处理钩子中处理了错误，可以调用 suppressError() 来取消抛错
       suppressError()
+    } else if (status === 404) {
+      alert('这里是404的错误处理钩子，不处理会抛出错误')
     } else if (status === 502) {
       // ✅ 先检查特定状态码（502）
       alert('这里是502的错误处理钩子，并且调用了suppressError() 来取消抛错，用户不处理也不会抛出错误')
@@ -59,6 +63,7 @@ const httpInstance = createInstance({
     } else if (status >= 402 && status <= 500) {
       // ✅ 然后检查范围（使用 >= 更清晰）
       alert('这里是402-500的错误处理钩子，并且未调用suppressError() 来取消抛错，用户必须处理错误，否则会抛出错误')
+      suppressError();
     } else if (status >= 503) {
       // ✅ 其他 5xx 错误（503, 504 等）
       alert('这里是503+的错误处理钩子，并且调用了suppressError() 来取消抛错')

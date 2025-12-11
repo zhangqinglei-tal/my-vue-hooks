@@ -1,40 +1,11 @@
 <template>
   <div id="app">
-
-
-    <!-- toAwaitFetch 演示 -->
     <ToAwaitFetchPlayground />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useCounter } from '../src/hooks/useCounter'
-import { useToggle } from '../src/hooks/useToggle'
-import { useLocalStorage } from '../src/hooks/useLocalStorage'
 import ToAwaitFetchPlayground from './components/ToAwaitFetchPlayground.vue'
-
-// useCounter
-const counter = useCounter(0)
-
-// useToggle
-const toggle = useToggle(false)
-
-// useLocalStorage
-const storage = useLocalStorage('demo-storage', '')
-const storageValue = ref(storage.value || '')
-
-// 处理 localStorage 变化
-const handleStorageChange = () => {
-  storage.value = storageValue.value
-}
-
-// 清除 localStorage
-const handleStorageClear = () => {
-  storage.value = ''
-  storageValue.value = ''
-  localStorage.removeItem('demo-storage')
-}
 </script>
 
 <style scoped>

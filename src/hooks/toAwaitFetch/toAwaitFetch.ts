@@ -251,25 +251,69 @@ const buildURL = (baseURL: string | undefined, url: string, urlParams?: string):
 };
 
 /**
+ * 判空：无响应体或无需解析的响应
+ */
+const isEmptyBody = (response: Response): boolean => {
+  if (!response) {
+    return true;
+  }
+  if (response.status === 204 || response.status === 205 || response.status === 304) {
+    return true;
+  }
+  const contentLength = response.headers.get('content-length');
+  if (contentLength && Number(contentLength) === 0) {
+    return true;
+  }
+  return false;
+};
+
+/**
+ * 安全解析 JSON，避免空体或非法 JSON 抛错
+ */
+const parseJsonSafe = async <T = any>(response: Response): Promise<T> => {
+  if (isEmptyBody(response)) {
+    return undefined as T;
+  }
+  const rawText = await response.text();
+  if (!rawText.trim()) {
+    return undefined as T;
+  }
+  try {
+    return JSON.parse(rawText) as T;
+  } catch (error) {
+    // const parseError =
+    //   error instanceof Error ? error : new Error('Unexpected JSON parse error');
+    // parseError.name = 'JSONParseError';
+    // throw parseError;
+    return undefined as T;
+  }
+};
+
+/**
  * 解析响应数据
+ * 兼容：无响应、空体、非法 JSON
  */
 const parseResponse = async <T = any>(
   response: Response,
   responseType: ResponseType
 ): Promise<T> => {
+  if (!response) {
+    throw new Error('No response received');
+  }
+
   switch (responseType) {
     case 'json':
-      return await response.json();
+      return await parseJsonSafe<T>(response);
     case 'text':
-      return await response.text() as any;
+      return await response.text() as unknown as T;
     case 'blob':
-      return await response.blob() as any;
+      return await response.blob() as unknown as T;
     case 'arraybuffer':
-      return await response.arrayBuffer() as any;
+      return await response.arrayBuffer() as unknown as T;
     case 'formData':
-      return await response.formData() as any;
+      return await response.formData() as unknown as T;
     default:
-      return await response.json();
+      return await parseJsonSafe<T>(response);
   }
 };
 
@@ -621,14 +665,16 @@ class FetchInstanceImpl implements FetchInstance {
         finalHeaders = headers;
       }
       
-      const fetchPromise = fetch(fullURL, {
+      const fetchParams = {
         method: mergedConfig.method || 'GET',
         headers: finalHeaders,
         body,
         mode: (mergedConfig.mode === 'websocket' ? 'cors' : mergedConfig.mode) || 'cors',
         credentials: mergedConfig.credentials || 'include',
         signal: controller.signal,
-      });
+      }
+      
+      const fetchPromise = fetch(fullURL, fetchParams);
       
       let response: Response;
       
