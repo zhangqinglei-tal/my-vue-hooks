@@ -274,20 +274,26 @@ const parseJsonSafe = async <T = any>(response: Response): Promise<T> => {
   if (isEmptyBody(response)) {
     return undefined as T;
   }
-  let rawText: string;
   try {
-    rawText = await response.text();
-  } catch {
-    return undefined as T;
-  }
-  if (!rawText.trim()) {
-    return undefined as T;
-  }
-  try {
-    return JSON.parse(rawText) as T;
+    return await response.json() as T;
   } catch (error) {
-    return undefined as T;
+    let rawText: string;
+    try {
+      rawText = await response.text();
+    } catch {
+      return undefined as T;
+    }
+    if (!rawText.trim()) {
+      return undefined as T;
+    }
+    try {
+      return JSON.parse(rawText) as T;
+    } catch (error) {
+      return undefined as T;
+    }
   }
+  return undefined as T;
+  
 };
 
 /**
