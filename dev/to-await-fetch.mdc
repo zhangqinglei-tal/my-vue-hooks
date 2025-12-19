@@ -1,0 +1,327 @@
+## toAwaitFetch 使用规则
+
+### 🎯 核心原则
+- **类型安全第一**：所有请求必须明确 `TResponse` 类型，`TRequest` 类型可根据参数自动推断
+- **错误处理必备**：不能忽略错误处理，必须使用解构或链式调用处理错误
+- **实例化配置**：优先使用 `createInstance` 创建配置完整的 HTTP 实例
+- **测试覆盖**：每个 HTTP 请求场景都需要对应的单元测试
+
+### 📁 项目结构规范
+```
+src/
+├── utils/
+│   └── http.ts          # HTTP 实例配置（推荐）
+├── services/            # API 服务层
+│   └── userService.ts   # 业务服务封装
+└── types/
+    └── api.ts           # API 类型定义
+```
+
+### 🔧 HTTP 实例配置
+
+#### ✅ 推荐配置方式
+```typescript
+// src/utils/http.ts
+import { createInstance } from 'to-await-fetch'
+
+export const httpInstance = createInstance({
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  timeout: 10000,
+  headers: ({ url, method }) => ({
+    'Authorization': `Bearer ${getToken()}`,
+    'Content-Type': 'application/json'
+  }),
+  // 业务成功判定
+  validateResponse: (response: ApiResponse) => response.code === 0,
+  // 数据转换
+  transformResponse: (response: ApiResponse) => response.data,
+  // 错误处理
+  onHttpError: (error, status, response, suppressError) => {
+    if (status === 401) {
+      redirectToLogin()
+      suppressError()
+    }
+  },
+  onBusinessError: (error, response, suppressError) => {
+    showBusinessError(response.message)
+    suppressError()
+  },
+  onNetworkError: (error, suppressError) => {
+    showNetworkError()
+    suppressError()
+  },
+  // 重试配置
+  retry: {
+    enabled: true,
+    maxRetryCount: 3,
+    delay: 1000
+  }
+})
+
+export const { sendGet, sendPost, sendPostForm, sendGetBlob, sendPostBlob } = httpInstance
+```
+
+#### ❌ 避免的配置方式
+```typescript
+// ❌ 不要直接使用默认实例
+import { sendGet } from 'to-await-fetch'
+
+// ❌ 不要在组件中重复配置
+const [data] = await sendGet('/api/users', undefined, {
+  baseURL: 'https://api.example.com',
+  timeout: 5000,
+  // ... 大量重复配置
+})
+```
+
+### 📝 使用规范
+
+#### 1. 类型定义
+```typescript
+// src/types/api.ts
+export interface ApiResponse<T = any> {
+  code: number
+  message: string
+  data: T
+}
+
+export interface User {
+  id: number
+  name: string
+  email: string
+}
+
+export interface CreateUserRequest {
+  name: string
+  email: string
+}
+```
+
+#### 2. 服务层封装
+```typescript
+// src/services/userService.ts
+import { sendGet, sendPost } from '@/utils/http'
+import type { User, CreateUserRequest, ApiResponse } from '@/types/api'
+
+export const getUsers = async (): Promise<User[]> => {
+  const [data, error, success] = await sendGet<User[]>('/users')
+  if (!success) {
+    throw new Error(`获取用户失败: ${error?.message}`)
+  }
+  return data!
+}
+
+export const createUser = async (userData: CreateUserRequest): Promise<User> => {
+  const [data, error, success] = await sendPost<User, CreateUserRequest>('/users', userData)
+  if (!success) {
+    throw new Error(`创建用户失败: ${error?.message}`)
+  }
+  return data!
+}
+```
+
+#### 3. 组件中的使用
+```typescript
+// ✅ 推荐：在组件中使用服务层
+import { getUsers, createUser } from '@/services/userService'
+import type { User } from '@/types/api'
+
+export default {
+  async setup() {
+    const users = ref<User[]>([])
+    const loading = ref(false)
+
+    const loadUsers = async () => {
+      loading.value = true
+      const [data, error, success] = await getUsers();
+      if (error) {
+        console.error('加载用户失败:', error)
+      } else {
+        users.value = data
+      }
+      loading.value = false;
+    }
+
+    return { users, loading, loadUsers }
+  }
+}
+```
+
+#### 4. 文件上传
+```typescript
+// ✅ 正确使用文件上传
+import { sendPostForm } from '@/utils/http'
+
+const uploadFile = async (file: File) => {
+  const [result, error, success] = await sendPostForm('/upload', {
+    file: file,
+    name: 'uploaded-file'
+  })
+
+  if (success) {
+    console.log('上传成功:', result)
+  } else {
+    console.error('上传失败:', error?.message)
+  }
+}
+```
+
+#### 5. 文件下载
+```typescript
+// ✅ 正确使用文件下载
+import { sendGetBlob } from '@/utils/http'
+
+const downloadFile = async (fileId: string) => {
+  const [blob, error, success] = await sendGetBlob('/download', { id: fileId })
+
+  if (success && blob) {
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'filename.ext'
+    a.click()
+    URL.revokeObjectURL(url)
+  } else {
+    console.error('下载失败:', error?.message)
+  }
+}
+```
+
+### 🚨 错误处理规范
+
+#### ✅ 正确错误处理
+```typescript
+// 方式1：解构处理（推荐用于业务逻辑）
+const [data, error, success] = await sendGet<User[]>('/api/users')
+if (success) {
+  // 处理成功数据
+  console.log('数据:', data)
+} else {
+  // 
+  console.error('错误:', error?.message)
+  // 根据错误类型处理，http、network 类型的错误应该放在 http.ts中进行处理
+  // 此处应该只处理业务异常的情况
+}
+```
+
+
+### 🔄 请求取消规范
+
+#### ✅ 正确使用请求取消
+```typescript
+import { sendGet } from '@/utils/http'
+import type { User } from '@/types/api'
+
+let currentRequest: ReturnType<typeof sendGet> | null = null
+
+const searchUsers = async (query: string) => {
+  // 取消之前的请求
+  if (currentRequest) {
+    currentRequest.cancel()
+  }
+
+  // 发起新请求
+  currentRequest = sendGet<User[]>('/api/users/search', { q: query }, { timeout: 5000 })
+
+  const [data, error, success] = await currentRequest
+
+  if (success) {
+    // 处理搜索结果
+  } else if (error?.type === 'network' && error?.message?.includes('cancelled')) {
+    // 请求被取消，不做处理
+    return
+  } else {
+    // 处理其他错误
+  }
+
+  currentRequest = null
+}
+```
+
+### 🧪 测试规范
+
+#### ✅ 单元测试示例
+```typescript
+// src/services/__tests__/userService.test.ts
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { getUsers, createUser } from '../userService'
+import { httpInstance } from '@/utils/http'
+
+// Mock http instance
+vi.mock('@/utils/http', () => ({
+  httpInstance: {
+    sendGet: vi.fn(),
+    sendPost: vi.fn()
+  }
+}))
+
+describe('UserService', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  describe('getUsers', () => {
+    it('should return users on success', async () => {
+      const mockUsers = [
+        { id: 1, name: 'John', email: 'john@example.com' }
+      ]
+
+      vi.mocked(httpInstance.sendGet).mockResolvedValue([
+        mockUsers,
+        undefined,
+        true
+      ])
+
+      const result = await getUsers()
+      expect(result).toEqual(mockUsers)
+    })
+
+    it('should throw error on failure', async () => {
+      const mockError = { message: 'Network error', type: 'network' as const }
+
+      vi.mocked(httpInstance.sendGet).mockResolvedValue([
+        undefined,
+        mockError,
+        false
+      ])
+
+      await expect(getUsers()).rejects.toThrow('获取用户失败')
+    })
+  })
+})
+```
+
+### 📋 检查清单
+
+#### 项目初始化
+- [ ] 创建 `src/utils/http.ts` 统一配置 HTTP 实例
+- [ ] 定义 `src/types/api.ts` API 相关类型
+- [ ] 创建 `src/services/` 目录存放业务服务层
+
+#### 代码编写时
+- [ ] 使用明确的泛型参数 `<TResponse, TRequest>`
+- [ ] 所有异步请求都有错误处理
+- [ ] 避免在组件中直接调用 HTTP 方法
+- [ ] 长耗时请求支持取消功能
+- [ ] 文件上传使用 `sendPostForm`，下载使用 `sendGetBlob`
+
+#### 代码审查时
+- [ ] 检查是否使用了解构或链式调用处理错误
+- [ ] 验证类型定义的完整性
+- [ ] 确认错误处理覆盖所有错误类型
+- [ ] 检查是否有单元测试覆盖
+
+### 🏷️ 常见错误及解决方案
+
+| 错误场景 | 错误写法 | 正确写法 |
+|---------|---------|---------|
+| 忽略错误处理 | `const [data] = await sendGet('/api')` | `const [data, error, success] = await sendGet('/api')` |
+| 类型不明确 | `sendGet('/users')` | `sendGet<User[]>('/users')` |
+| 重复配置 | 在组件中大量配置 | 使用统一配置的实例 |
+| 无取消机制 | 长请求无取消 | 使用 `cancel()` 方法 |
+| 错误判断不全 | `if (!success) console.error('失败')` | 根据 `error.type` 分类处理 |
+
+### 🔗 相关链接
+- [API 文档](./toAwaitFetch.api.ts)
+- [使用文档](./toAwaitFetch.md)
+- [最佳实践示例](../../dev/components/toAwaitFetch/BestPractice.vue)

@@ -88,24 +88,6 @@ request.cancel()
 const [, error, success] = await request // 被取消时 error.type === 'timeout' 或 'network'
 ```
 
-## 🧭 更多能力
-
-- 自定义状态码校验：`validateStatus`
-- 业务校验与转换：`validateResponse`、`transformResponse`
-- FormData / Blob：`sendPostForm`、`sendPostBlob`、`sendGetBlob`
-- Promise.all 并行：`Promise.all(urls.map((url) => sendGet(url)))`
-- 全局配置管理：`setGlobalConfig` / `mergeGlobalConfig`
-
-详见 `docs/hooks/toAwaitFetch.md`。
-
-## 🛠️ 开发与测试
-
-```bash
-pnpm install          # 安装依赖
-pnpm build            # 构建产物（含 d.ts）
-pnpm vitest run __tests__   # 运行所有测试
-pnpm prepublishOnly   # 发布前检查（构建、测试、类型检查）
-```
 
 ## 📦 版本信息
 

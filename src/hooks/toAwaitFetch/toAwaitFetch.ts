@@ -946,7 +946,7 @@ class FetchInstanceImpl implements FetchInstance {
   /**
    * GET 请求
    */
-  sendGet<TRequest = any, TResponse = any>(
+  sendGet<TResponse = any, TRequest = any>(
     url: string,
     params?: TRequest,
     config?: Omit<RequestConfig<TRequest, TResponse>, 'url' | 'method' | 'data'>
@@ -962,7 +962,7 @@ class FetchInstanceImpl implements FetchInstance {
   /**
    * POST 请求（默认 JSON 格式）
    */
-  sendPost<TRequest = any, TResponse = any>(
+  sendPost<TResponse = any, TRequest = any>(
     url: string,
     data?: TRequest,
     config?: Omit<RequestConfig<TRequest, TResponse>, 'url' | 'method' | 'data'>
@@ -979,7 +979,7 @@ class FetchInstanceImpl implements FetchInstance {
   /**
    * POST 请求（FormData 格式，用于文件上传）
    */
-  sendPostForm<TRequest = any, TResponse = any>(
+  sendPostForm<TResponse = any, TRequest = any>(
     url: string,
     data?: TRequest,
     config?: Omit<RequestConfig<TRequest, TResponse>, 'url' | 'method' | 'data'>
@@ -1045,7 +1045,7 @@ const defaultInstance = new FetchInstanceImpl();
  * 导出常用方法，方便直接使用：import { sendGet, sendPost } from '...'
  * 使用箭头函数直接调用实例方法，确保 this 正确绑定
  */
-export const sendGet = <TRequest = any, TResponse = any>(
+export const sendGet = <TResponse = any, TRequest = any>(
   url: string,
   params?: TRequest,
   config?: Omit<RequestConfig<TRequest, TResponse>, 'url' | 'method' | 'data'>
@@ -1058,20 +1058,20 @@ export const sendGet = <TRequest = any, TResponse = any>(
   });
 };
 
-export const sendPost = <TRequest = any, TResponse = any>(
+export const sendPost = <TResponse = any, TRequest = any>(
   url: string,
   data?: TRequest,
   config?: Omit<RequestConfig<TRequest, TResponse>, 'url' | 'method' | 'data'>
 ): FetchResultPromise<TResponse> => {
-  return defaultInstance.sendPost<TRequest, TResponse>(url, data, config);
+  return defaultInstance.sendPost<TResponse, TRequest>(url, data, config);
 };
 
-export const sendPostForm = <TRequest = any, TResponse = any>(
+export const sendPostForm = <TResponse = any, TRequest = any>(
   url: string,
   data?: TRequest,
   config?: Omit<RequestConfig<TRequest, TResponse>, 'url' | 'method' | 'data'>
 ): FetchResultPromise<TResponse> => {
-  return defaultInstance.sendPostForm<TRequest, TResponse>(url, data, config);
+  return defaultInstance.sendPostForm<TResponse, TRequest>(url, data, config);
 };
 
 export const sendPostBlob = <TRequest = any>(

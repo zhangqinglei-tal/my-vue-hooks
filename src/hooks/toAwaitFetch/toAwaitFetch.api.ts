@@ -451,7 +451,7 @@ export interface FetchInstance {
    * @param config 请求配置（不包含 url、method 和 data）
    * @returns FetchResultPromise<TResponse> 支持链式调用和解构
    */
-  sendGet<TRequest = any, TResponse = any>(
+  sendGet<TResponse = any, TRequest = any>(
     url: string,
     params?: TRequest,
     config?: Omit<RequestConfig<TRequest, TResponse>, 'url' | 'method' | 'data'>
@@ -465,7 +465,7 @@ export interface FetchInstance {
    * @param config 请求配置（不包含 url、method 和 data）
    * @returns FetchResultPromise<TResponse> 支持链式调用和解构
    */
-  sendPost<TRequest = any, TResponse = any>(
+  sendPost<TResponse = any, TRequest = any>(
     url: string,
     data?: TRequest,
     config?: Omit<RequestConfig<TRequest, TResponse>, 'url' | 'method' | 'data'>
@@ -478,7 +478,7 @@ export interface FetchInstance {
    * @param config 请求配置（不包含 url、method 和 data）
    * @returns FetchResultPromise<TResponse> 支持链式调用和解构
    */
-  sendPostForm<TRequest = any, TResponse = any>(
+  sendPostForm<TResponse = any, TRequest = any>(
     url: string,
     data?: TRequest,
     config?: Omit<RequestConfig<TRequest, TResponse>, 'url' | 'method' | 'data'>

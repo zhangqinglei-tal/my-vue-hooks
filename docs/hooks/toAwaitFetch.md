@@ -28,11 +28,11 @@ pnpm add toAwaitFetch
 ```typescript
 import { sendGet, sendPost } from 'toAwaitFetch'
 
-// GET 请求
-const [data, error, success] = await sendGet('/api/users')
+// GET 请求（响应类型明确，请求参数省略）
+const [data, error, success] = await sendGet<User[]>('/api/users')
 
 // POST 请求
-const [created] = await sendPost('/api/users', { name: 'John' })
+const [created] = await sendPost<User, CreateUserRequest>('/api/users', { name: 'John' })
 ```
 
 ### 2. 完整封装（推荐）
@@ -249,9 +249,9 @@ sendGet('/api/test/not-found')
 | 名称 | 签名 | 说明 |
 | --- | --- | --- |
 | `create` | `(globalConfig?: GlobalConfig<TResponse>) => FetchInstance<TResponse>` | 等同于 createInstance |
-| `sendGet` | `<TRequest, TResponse>(url: string, params?: TRequest, config?: Omit<RequestConfig<TRequest, TResponse>, 'url' \| 'method' \| 'data'>) => FetchResultPromise<TResponse>` | GET，请求参数自动拼接为查询字符串 |
-| `sendPost` | `<TRequest, TResponse>(url: string, data?: TRequest, config?: Omit<RequestConfig<TRequest, TResponse>, 'url' \| 'method' \| 'data'>) => FetchResultPromise<TResponse>` | POST，默认 JSON |
-| `sendPostForm` | `<TRequest, TResponse>(url: string, data?: TRequest, config?: Omit<RequestConfig<TRequest, TResponse>, 'url' \| 'method' \| 'data'>) => FetchResultPromise<TResponse>` | POST FormData（自动将 data 转为 FormData，自动设置 multipart/form-data 并保留自定义 headers） |
+| `sendGet` | `<TResponse, TRequest = any>(url: string, params?: TRequest, config?: Omit<RequestConfig<TRequest, TResponse>, 'url' \| 'method' \| 'data'>) => FetchResultPromise<TResponse>` | GET，请求参数自动拼接为查询字符串 |
+| `sendPost` | `<TResponse, TRequest = any>(url: string, data?: TRequest, config?: Omit<RequestConfig<TRequest, TResponse>, 'url' \| 'method' \| 'data'>) => FetchResultPromise<TResponse>` | POST，默认 JSON |
+| `sendPostForm` | `<TResponse, TRequest = any>(url: string, data?: TRequest, config?: Omit<RequestConfig<TRequest, TResponse>, 'url' \| 'method' \| 'data'>) => FetchResultPromise<TResponse>` | POST FormData（自动将 data 转为 FormData，自动设置 multipart/form-data 并保留自定义 headers） |
 | `sendPostBlob` | `<TRequest>(url: string, data?: TRequest, config?: Omit<RequestConfig<TRequest, Blob>, 'url' \| 'method' \| 'data'>) => FetchResultPromise<Blob>` | POST 发送 JSON，响应返回 Blob（导出/下载） |
 | `sendGetBlob` | `<TRequest>(url: string, params?: TRequest, config?: Omit<RequestConfig<TRequest, Blob>, 'url' \| 'method' \| 'data'>) => FetchResultPromise<Blob>` | GET，返回 Blob（下载文件） |
 | `setGlobalConfig` | `(config: GlobalConfig<TResponse>) => void` | 覆盖当前实例的全局配置 |
